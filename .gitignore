@@ -1,2 +1,3 @@
 node_modules
-cucumber-report.html
+cucumber-report*.html
+.vscode/

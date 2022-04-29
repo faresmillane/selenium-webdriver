@@ -1,5 +1,4 @@
 const faker = require('faker');
-const crypto = require('crypto');
 
 const randomPin = (len) => {
   let charSet = '123456789';
@@ -25,13 +24,13 @@ const randomBirthDate = () => {
   return [year, month, day].join('-');
 };
 
-const randomPassword = () => `${faker.lorem.word()}.@A${faker.random.number()}`;
+const randomPassword = () => `${faker.lorem.word()}.@A${faker.datatype.number()}`;
 
-const randomId = () => faker.random.uuid();
+const randomId = () => faker.datatype.uuid();
 
 const randomGender = () => {
   const myArray = ['mr_gender', 'mrs_gender'];
-  return getRandomValue(myArray);
+  return myArray[Math.floor(Math.random() * myArray.length)];
 };
 
 const dbbRandomMail = (id) => {

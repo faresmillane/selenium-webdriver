@@ -18,6 +18,8 @@ module.exports = {
         //    }
         },
     },
+    headless: true,
     features: "",
-    parallel: "5"
+    parallel: 8,
+    retry: 0
 };

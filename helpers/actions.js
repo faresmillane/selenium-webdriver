@@ -1,4 +1,4 @@
-const web = require('../resources/library');
+const web = require('../resources/library/web');
 
   const runSeleniumServer = async () => {
         await web.start();
@@ -34,6 +34,18 @@ const web = require('../resources/library');
     await web.dismissAlert();
   }
 
+  const maximizeWindow = async () => {
+    await web.maximizeWindow();
+  }
+
+  const clickBox = async (element) => {
+    await web.clickBox(element);
+  }
+
+  const wait = async (time) => {
+    await web.wait(time);
+  }
+
   module.exports = {
     runSeleniumServer,
     init,
@@ -42,5 +54,8 @@ const web = require('../resources/library');
     findElementWeb,
     clickWeb,
     quitDriverWeb,
-    dismissAlert
+    dismissAlert,
+    maximizeWindow,
+    clickBox,
+    wait
 };

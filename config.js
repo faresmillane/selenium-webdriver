@@ -22,8 +22,6 @@ module.exports = {
     features: "",
     parallel: 8,
     retry: 0,
-    console: true,
     htmlReport: false,
-    jsonReport: true,
-    publish: false
+    jsonReport: true
 };

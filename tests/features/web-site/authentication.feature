@@ -1,4 +1,4 @@
-Feature: tests web
+Feature: Authentication
 
   @Sanity @One
   Scenario: navigate to home page

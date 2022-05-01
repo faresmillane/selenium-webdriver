@@ -10,6 +10,7 @@ const chromedriver = async () => {
         if(config.headless) {
             options.addArguments('headless'); 
             options.addArguments('disable-gpu');
+            options.addArguments('--no-sandbox');
         }
         const driver = await new Builder()
         .withCapabilities(config.capabilities[process.env.DRIVER])
@@ -27,6 +28,7 @@ const geckodriver = async () => {
     try {
         if(config.headless) {
             options = new firefox.Options().headless();
+            options.addArguments('--no-sandbox');
         } else {
             options = new firefox.Options()
         }

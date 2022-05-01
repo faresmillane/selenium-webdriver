@@ -25,8 +25,8 @@ const getUser = async (user) => {
         }
       } else if (user == User.REGISTERED) {
         return {
-          login_email: "fmillane@yopmail.com",
-          login_password: "Rakuten2020"
+          login_email: process.env.REGISTRED_USER,
+          login_password: process.env.REGISTRED_PASS
         }
       }
 }

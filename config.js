@@ -18,10 +18,10 @@ module.exports = {
           }
         }
     },
-    headless: false,
+    headless: true,
     features: "",
-    parallel: 3,
-    retry: 0,
+    parallel: 4,
+    retry: 1,
     htmlReport: false,
     jsonReport: true
 };

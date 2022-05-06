@@ -46,6 +46,14 @@ const web = require('../resources/library/web');
     await web.wait(time);
   }
 
+  const waitElement = async (element) => {
+    await web.waitToSeeElement(element);
+  }
+
+  const isDisplayed = async (element) => {
+    await web.elementIsDisplayed(element);
+  }
+
   module.exports = {
     runSeleniumServer,
     init,
@@ -57,5 +65,7 @@ const web = require('../resources/library/web');
     dismissAlert,
     maximizeWindow,
     clickBox,
-    wait
+    wait,
+    waitElement,
+    isDisplayed
 };

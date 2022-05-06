@@ -3,24 +3,24 @@ module.exports = {
     capabilities: {
         chrome: {
             browserName: "chrome",
-        //    chromeOptions: {
-        //        mobileEmulation: { 
-        //          deviceName: "Galaxy S5",
-        //        }
-        //    }
+            "goog:chromeOptions": {
+                args: []
+            }
         },
         firefox: {
              browserName: "firefox",
-        //     firefoxOptions: {
-        //        mobileEmulation: { 
-        //          deviceName: "Galaxy S5",
-        //        }
-        //    }
         },
+        mobile: {
+            browserName: 'chrome',
+            "goog:chromeOptions": {
+              mobileEmulation: { "deviceName": "Nexus 5" },
+              args: []
+          }
+        }
     },
-    headless: true,
+    headless: false,
     features: "",
-    parallel: 8,
+    parallel: 3,
     retry: 0,
     htmlReport: false,
     jsonReport: true

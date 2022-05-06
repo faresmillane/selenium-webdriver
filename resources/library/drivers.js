@@ -1,21 +1,17 @@
 const { Builder } = require('selenium-webdriver');
-const chrome = require('selenium-webdriver/chrome');
 const firefox = require('selenium-webdriver/firefox');
 const config = require("../../config");
 require('dotenv').config()
 
 const chromedriver = async () => {
     try {
-        options = new chrome.Options();
+        let capabilities = config.capabilities[process.env.DRIVER];
         if(config.headless) {
-            options.addArguments('headless'); 
-            options.addArguments('disable-gpu');
-            options.addArguments('--no-sandbox');
+            capabilities['goog:chromeOptions'].args.push("headless", "disable-gpu", "--no-sandbox");
         }
         const driver = await new Builder()
-        .withCapabilities(config.capabilities[process.env.DRIVER])
+        .withCapabilities(capabilities)
         .usingServer(config.hostname)
-        .setChromeOptions(options)
         .build();
         return driver;
     }

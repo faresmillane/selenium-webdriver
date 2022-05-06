@@ -1,0 +1,102 @@
+pipeline {
+   agent {label 'tools-qa'}
+
+   parameters {
+      string(defaultValue: "develop", description: 'On which automation repository branch ?', name: 'BRANCH_NAME')
+      choice(name: 'ENV', choices: ['Env07', 'Env01', 'Env02', 'Env03', 'Env04', 'Env05', 'Env06', 'Env08', 'Env09', 'Env10', 'Env11'], description: 'on which environement ?')
+      choice(name: 'SEND_EMAIL', choices: ['no', 'yes'])
+   }
+ 
+   stages {
+         stage("Preparation & install"){
+            steps{
+            script {
+                	wrap([$class: 'BuildUser']) {
+                	    if (currentBuild.getBuildCauses()[0].shortDescription.contains('timer') == true){
+                            currentBuild.displayName = "by jenkins timer on ${ENV}"
+                        } else {
+                            currentBuild.displayName = "by ${BUILD_USER_FIRST_NAME} on ${ENV}"
+                        }
+                            currentBuild.description = "branch: ${BRANCH_NAME}."
+                    }
+               }
+               echo "Preparation & install dependencies ..."
+               sh '''
+               export PATH=/usr/local/bin:$PATH
+               git clone https://github.com/faresmillane/selenium-webdriver.git -b ${BRANCH_NAME}
+               cd selenium-webdriver
+               mkdir reports
+               pwd
+               node -v
+               npm ci
+               '''
+               echo "Preparation & installation : Done"
+            }
+         }
+         stage("Run tests"){
+             steps {    
+                   parallel(
+                    'Chrome': {
+                        sh'''
+                        cd selenium-webdriver
+                        DRIVER=chrome npm run test:web
+                        cat .env
+                        '''
+                    },
+                    'Firefox': {
+                       sh'''
+                        cd selenium-webdriver
+                        DRIVER=firefox npm run test:web
+                        cat .env
+                        '''
+                    }
+                    'Mobile': {
+                       sh'''
+                        cd selenium-webdriver
+                        DRIVER=mobile npm run test:mob
+                        cat .env
+                        '''
+                    }
+                )
+            }
+         }
+    } 
+    post {
+        always {
+            echo "generating report..."
+            cucumber buildStatus: 'UNSTABLE',
+                reportTitle: 'firefox report',
+                fileIncludePattern: 'selenium-webdriver/reports/cucumber-report-firefox.json',
+                trendsLimit: 10,
+                classifications: [
+                    [
+                        'key': 'Browser',
+                        'value': 'Firefox'
+                    ]
+                ]
+            cucumber buildStatus: 'UNSTABLE',
+                reportTitle: 'chrome report',
+                fileIncludePattern: 'selenium-webdriver/reports/cucumber-report-chrome.json',
+                trendsLimit: 10,
+                classifications: [
+                    [
+                        'key': 'Browser',
+                        'value': 'Chrome'
+                    ]
+                ]
+            cucumber buildStatus: 'UNSTABLE',
+                reportTitle: 'mobile report',
+                fileIncludePattern: 'selenium-webdriver/reports/cucumber-report-mobile.json',
+                trendsLimit: 10,
+                classifications: [
+                    [
+                        'key': 'Browser',
+                        'value': 'Chrome mobile'
+                    ]
+                ]
+        }
+		cleanup {
+        	deleteDir()
+        }
+    }
+}

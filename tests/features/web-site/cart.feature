@@ -1,0 +1,1 @@
+# ajouter produit, puis se connecter et vérifier que le ânier est bien présent avec ses élements

@@ -1,6 +1,6 @@
-const home_page = require('./home-page.page');
-const login_page = require('./login.page');
-const account_page = require('./account.page');
+const home_page = require('./home-page');
+const login_page = require('./login-page');
+const account_page = require('./account-page');
 
 module.exports = {
     home_page,

@@ -1,9 +1,9 @@
 const web = require('../resources/library/web');
-const pages = require('./../tests/pages');
+require('dotenv').config()
 
   const clearHomePagePopUp = async () => {
-        await web.click(pages["home_page"].locators["cookies_accept"]);
-    }
+    web.cookiesAccept()
+  }
 
   module.exports = {
     clearHomePagePopUp,

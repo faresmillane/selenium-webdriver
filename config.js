@@ -18,7 +18,7 @@ module.exports = {
           }
         }
     },
-    headless: false,
+    headless: true,
     features: "",
     parallel: 5,
     retry: 1,

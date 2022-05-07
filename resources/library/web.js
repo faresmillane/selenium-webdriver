@@ -182,9 +182,11 @@ const clickBox = async (element) => {
     }
 };
 
-const cookiesAccept = async (element) => {
+const cookiesAccept = async () => {
     try {
-        await driver.findElement(By.className("didomi_accept_button notice-module_btnStyle_+Sh notice-module_acceptAndCloseBtnStyle_Tpr "))
+        const element = "didomi_accept_button notice-module_btnStyle_+Sh notice-module_acceptAndCloseBtnStyle_Tpr "
+        await driver.wait(until.elementLocated(By.className(element)), 5000);
+        await driver.findElement(By.className(element))
         .click();
     }
     catch (error) {

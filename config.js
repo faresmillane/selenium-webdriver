@@ -21,7 +21,7 @@ module.exports = {
     headless: true,
     features: "",
     parallel: 5,
-    retry: 0,
+    retry: 1,
     htmlReport: false,
     jsonReport: true
 };

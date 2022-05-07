@@ -81,7 +81,7 @@ Given("I click on the <{word}> submit button", async (element) => {
 /*data*/
 Given("I am a <{word}> user", async (user) => {
   data[user] = await dataGen.getUser(user);
-  await actions.wait(3000);
+  await actions.wait(2000);
 });
 
 Given("I fill my <{word}> <{word}> user", async (element, user) => {

@@ -35,6 +35,7 @@ Given("I start my navigator in <{word}>", async (url) => {
   await actions.navigate(`${process.env.BASE_URL}${pages[page].urls[url]}`);
   await actions.maximizeWindow();
   await utils.clearHomePagePopUp();
+  await actions.wait(1000);
 });
 
 Given("I navigate to <{word}>", async (url) => {
@@ -44,7 +45,12 @@ Given("I navigate to <{word}>", async (url) => {
 
 Given("I access in the <{word}> screen", async (element) => {
   page = element;
-  await actions.findElementWeb(pages[page].locators[element]);
+  await utils.accessToGoodPage(`${process.env.BASE_URL}${pages[page].urls[element]}`);
+});
+
+Given("I access to <{word}> screen between <{word}> page", async (screen, page) => {
+  await utils.accessToGoodPage(`${process.env.BASE_URL}${pages[page].urls[screen]}`);
+  await actions.wait(2000);
 });
 
 Given("I am in the <{word}> screen", async (element) => {
@@ -54,7 +60,7 @@ Given("I am in the <{word}> screen", async (element) => {
 
 /*find elements*/
 Given("I see the <{word}> label", async (element) => {
-  await actions.waitElement(pages[page].locators[element])
+  await actions.waitElement(pages[page].locators[element]);
   await actions.findElementWeb(pages[page].locators[element]);
 });
 
@@ -74,6 +80,7 @@ Given("I click on the <{word}> submit button", async (element) => {
 /*data*/
 Given("I am a <{word}> user", async (user) => {
   data[user] = await dataGen.getUser(user);
+  await actions.wait(2000);
 });
 
 Given("I fill my <{word}> <{word}> user", async (element, user) => {

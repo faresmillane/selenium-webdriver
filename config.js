@@ -18,9 +18,9 @@ module.exports = {
           }
         }
     },
-    headless: true,
+    headless: false,
     features: "",
-    parallel: 4,
+    parallel: 5,
     retry: 1,
     htmlReport: false,
     jsonReport: true

@@ -1,34 +1,34 @@
 pipeline {
-   agent {label 'tools-qa'}
-
+   agent {
+       label 'tools-qa'
+    }
    parameters {
       string(defaultValue: "develop", description: 'On which automation repository branch ?', name: 'BRANCH_NAME')
-      choice(name: 'ENV', choices: ['Env07', 'Env01', 'Env02', 'Env03', 'Env04', 'Env05', 'Env06', 'Env08', 'Env09', 'Env10', 'Env11'], description: 'on which environement ?')
-      choice(name: 'SEND_EMAIL', choices: ['no', 'yes'])
-   }
- 
+      choice(name: 'RAKQA_ENV', choices: ['7', '1', '2', '3', '4', '5', '6', '8', '9', '10', '11'], description: 'on which environment ?')
+      choice(name: 'SEND_REPORT', choices: ['no', 'yes'])
+   } 
    stages {
          stage("Preparation & install"){
             steps{
             script {
                 	wrap([$class: 'BuildUser']) {
                 	    if (currentBuild.getBuildCauses()[0].shortDescription.contains('timer') == true){
-                            currentBuild.displayName = "by jenkins timer on ${ENV}"
+                            currentBuild.displayName = "Started by jenkins timer on www${RAKQA_ENV}.rakqa.fr env"
                         } else {
-                            currentBuild.displayName = "by ${BUILD_USER_FIRST_NAME} on ${ENV}"
+                            currentBuild.displayName = "Started by ${BUILD_USER_FIRST_NAME} on www${RAKQA_ENV}.rakqa.fr env"
                         }
                             currentBuild.description = "branch: ${BRANCH_NAME}."
                     }
                }
                echo "Preparation & install dependencies ..."
                sh '''
-               export PATH=/usr/local/bin:$PATH
-               git clone https://github.com/faresmillane/selenium-webdriver.git -b ${BRANCH_NAME}
-               cd selenium-webdriver
-               mkdir reports
-               pwd
-               node -v
-               npm ci
+                    export PATH=/usr/local/bin:$PATH
+                    git clone https://github.com/faresmillane/selenium-webdriver.git -b ${BRANCH_NAME}
+                    cd selenium-webdriver
+                    mkdir reports
+                    pwd
+                    node -v
+                    npm ci
                '''
                echo "Preparation & installation : Done"
             }
@@ -37,25 +37,28 @@ pipeline {
              steps {    
                    parallel(
                     'Chrome': {
+                        echo "chrome tests started ..."
                         sh'''
-                        cd selenium-webdriver
-                        DRIVER=chrome npm run test:web
-                        cat .env
+                            cd selenium-webdriver
+                            BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=chrome npm run test:web
                         '''
+                        echo "chrome tests : Done"
                     },
                     'Firefox': {
-                       sh'''
-                        cd selenium-webdriver
-                        DRIVER=firefox npm run test:web
-                        cat .env
+                        echo "firefox tests started ..."
+                        sh'''
+                            cd selenium-webdriver
+                            BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=firefox npm run test:web
                         '''
-                    }
+                        echo "firefox tests : Done"
+                    },
                     'Mobile': {
-                       sh'''
-                        cd selenium-webdriver
-                        DRIVER=mobile npm run test:mob
-                        cat .env
+                        echo "mobile tests started ..."
+                        sh'''
+                            cd selenium-webdriver
+                            BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=mobile npm run test:mob
                         '''
+                        echo "mobile tests : Done"
                     }
                 )
             }
@@ -64,39 +67,39 @@ pipeline {
     post {
         always {
             echo "generating report..."
-            cucumber buildStatus: 'UNSTABLE',
-                reportTitle: 'firefox report',
-                fileIncludePattern: 'selenium-webdriver/reports/cucumber-report-firefox.json',
-                trendsLimit: 10,
-                classifications: [
-                    [
-                        'key': 'Browser',
-                        'value': 'Firefox'
+                cucumber buildStatus: 'UNSTABLE',
+                    reportTitle: 'firefox report',
+                    fileIncludePattern: 'selenium-webdriver/reports/cucumber-report-firefox.json',
+                    trendsLimit: 10,
+                    classifications: [
+                        [
+                            'key': 'Browser',
+                            'value': 'Firefox'
+                        ]
                     ]
-                ]
-            cucumber buildStatus: 'UNSTABLE',
-                reportTitle: 'chrome report',
-                fileIncludePattern: 'selenium-webdriver/reports/cucumber-report-chrome.json',
-                trendsLimit: 10,
-                classifications: [
-                    [
-                        'key': 'Browser',
-                        'value': 'Chrome'
+                cucumber buildStatus: 'UNSTABLE',
+                    reportTitle: 'chrome report',
+                    fileIncludePattern: 'selenium-webdriver/reports/cucumber-report-chrome.json',
+                    trendsLimit: 10,
+                    classifications: [
+                        [
+                            'key': 'Browser',
+                            'value': 'Chrome'
+                        ]
                     ]
-                ]
-            cucumber buildStatus: 'UNSTABLE',
-                reportTitle: 'mobile report',
-                fileIncludePattern: 'selenium-webdriver/reports/cucumber-report-mobile.json',
-                trendsLimit: 10,
-                classifications: [
-                    [
-                        'key': 'Browser',
-                        'value': 'Chrome mobile'
+                cucumber buildStatus: 'UNSTABLE',
+                    reportTitle: 'mobile report',
+                    fileIncludePattern: 'selenium-webdriver/reports/cucumber-report-mobile.json',
+                    trendsLimit: 10,
+                    classifications: [
+                        [
+                            'key': 'Browser',
+                            'value': 'Chrome mobile'
+                        ]
                     ]
-                ]
-        }
-		cleanup {
-        	deleteDir()
+                }
+            cleanup {
+                deleteDir()
         }
     }
 }

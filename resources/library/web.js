@@ -51,6 +51,18 @@ async function getElement (element) {
                         catch (error) {
                             shared.manageElementWarning(`NAME=${elm}`);
                         }
+                        finally {
+                            try {
+                                if(element[i].includes("CLASS=")) {
+                                    elm = element[i].replace("CLASS=", "");
+                                    el = await driver.findElement(By.className(elm));
+                                    return el;
+                                };
+                            }
+                            catch (error) {
+                                shared.manageElementWarning(`CLASS=${elm}`);
+                            }
+                        }
                     }
                 }
             }
@@ -76,11 +88,6 @@ const initDriver = async () => {
             default:
               console.log(`Sorry, we are not configuration for ${process.env.DRIVER}.`);
           }
-          let session;
-          await driver.session_.then(function(sessionData) {
-            session = sessionData.id_;
-        });
-        return session;
     }
     catch (error) {
         await shared.manageElementError('tapPerform', error);
@@ -90,16 +97,32 @@ const initDriver = async () => {
 const getUrl = async (url) => {
     try {
         await driver.get(url);
-        return await new Promise(resolve => setTimeout(resolve, 1000));
+        
       }
     catch (error) {
       await shared.manageElementError(url, error);
     }
 };
 
+const getCurrentUrl = async (expectedUrl) => {
+    try {
+        let currentUrl;
+        do {
+            currentUrl = await driver.getCurrentUrl();
+            await wait(100);
+            if (currentUrl = expectedUrl) {
+                return currentUrl;
+            }
+        } while (await driver.getCurrentUrl() != expectedUrl);
+    }
+    catch (error) {
+      await shared.manageElementError(error);
+    };
+};
+
 const wait = async (milliseconds) => {
     try {
-        return await new Promise(resolve => setTimeout(resolve, 10));
+        return await new Promise(resolve => setTimeout(resolve, milliseconds));
     }
     catch (error) {
         throw Error;
@@ -161,14 +184,24 @@ const clickBox = async (element) => {
 
 const cookiesAccept = async (element) => {
     try {
-        await driver.manage().addCookie({name:'didomi_token', value: 'eyJ1c2VyX2lkIjoiMTgwOTRkYTItMmRmNi02NzJkLTk2NGQtNGU3YjM5ZjAwZThjIiwiY3JlYXRlZCI6IjIwMjItMDUtMDVUMTU6MzQ6MTkuMzc1WiIsInVwZGF0ZWQiOiIyMDIyLTA1LTA1VDE1OjM0OjE5LjM3NVoiLCJ2ZXJzaW9uIjoyLCJwdXJwb3NlcyI6eyJlbmFibGVkIjpbImF1ZGllbmNlbS14ZWRlVTJnUSIsImRldmljZV9jaGFyYWN0ZXJpc3RpY3MiLCJnZW9sb2NhdGlvbl9kYXRhIl19LCJ2ZW5kb3JzIjp7ImVuYWJsZWQiOlsiZ29vZ2xlIiwiYzpTSmVwYktqRzciLCJjOmNvbnRlbnRzcXVhcmUiLCJjOnRmMS1kaWdpdGFsLWZhY3RvcnkiLCJjOmZyYW5jZXR2LWZGcDN5VVhwIiwiYzppbnRvemV3ZS1XZlUyeHQ0TCIsImM6dGlueWNsdWVzLTNLaHBZTjZrIiwiYzp0d2VuZ2F0Y2YtMlh0UXdoV2YiLCJjOnBlcnNvbmFsaS1VRHpSQzJKbSIsImM6cmF0dGNmdjIteTZWTFgyUW4iLCJjOmF0aW50ZXJuZS1jV1FLSGVKWiIsImM6aGV5ZGF5LWFDcTRtTDJBIl19LCJ2ZW5kb3JzX2xpIjp7ImVuYWJsZWQiOlsiZ29vZ2xlIl19LCJhYyI6IkM2cUFHQUZrQW93THFnQUEuQzZxQUVBVVlGMVFBIn0='});
-        await driver.manage().addCookie({name:'euconsent-v2', value: 'CPYfsMAPYfsMAAHABBENCNCsAP_AAH_AAAAAIttf_X__b3_j-_5_f_t0eY1P9_7__-0zjhfdt-8N3f_X_L8X42M7vF36pq4KuR4Eu3LBIQdlHOHcTUmw6okVrzPsbk2cr7NKJ7PEmnMbO2dYGH9_n93TuZKY7_____7z_v-v_v____f_7-3f3__5_3---_e_V_99zbn9_____9nP___9v-_9________giyASYal5AF2JY4Mm0aRQogRhWEh1AoAKKAYWiKwgdXBTsrgJ9QQsAEAqAjAiBBiCjBgEAAgEASERASAHggEQBEAgABAAqAQgAI2AQWAFgYBAAKAaFiBFAEIEhBkQERymBARIlFBPZWIJQd7GmEIdZYAUCj-ioQESgBAsDISFg5jgCQEuFkgWYoXyAEYIAAA.f_gAD_gAAAAA'});
+        await driver.findElement(By.className("didomi_accept_button notice-module_btnStyle_+Sh notice-module_acceptAndCloseBtnStyle_Tpr "))
+        .click();
     }
     catch (error) {
-        await shared.manageElementError(element, error);
+        
     }
 };
 
+const popinsClose = async (element) => {
+    try {
+        await driver.executeScript(`document.getElementsByClassName("close")[0].click()`);
+        await driver.executeScript(`document.getElementsByClassName("kml-modal-wrapper")[0]`);
+        await driver.findElement(By.className("close")).click();
+    }
+    catch (error) {
+        
+    }
+};
 
 const maximizeWindow = async () => {
     try {
@@ -214,7 +247,6 @@ const waitToSeeElement = async (element) => {
                 await driver.wait(until.elementLocated(By.id(elm)), 5000);
                 return;
             } else if(element[i].includes("SELECTOR=")) {
-                console.log("je fait quoi ici")
                 elm = element[i].replace("SELECTOR=", "");
                 await driver.wait(until.elementLocated(By.css(elm)), 5000);
                 return;
@@ -239,7 +271,6 @@ const elementIsDisplayed = async (element) => {
                 await driver.findElement(By.id(elm)).isDisplayed();
                 return;
             } else if(element[i].includes("SELECTOR=")) {
-                console.log("je fais quoi la")
                 elm = element[i].replace("SELECTOR=", "");
                 await driver.findElement(By.css(elm)).isDisplayed();
                 return;
@@ -268,5 +299,7 @@ module.exports = {
     clickBox,
     waitToSeeElement,
     elementIsDisplayed,
-    cookiesAccept
+    cookiesAccept,
+    getCurrentUrl,
+    popinsClose
 };

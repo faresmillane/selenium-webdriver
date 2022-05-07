@@ -245,14 +245,27 @@ const waitToSeeElement = async (element) => {
             if(element[i].includes("ID=")) {
                 elm = element[i].replace("ID=", "");
                 await driver.wait(until.elementLocated(By.id(elm)), 5000);
+                await wait(100);
                 return;
             } else if(element[i].includes("SELECTOR=")) {
                 elm = element[i].replace("SELECTOR=", "");
                 await driver.wait(until.elementLocated(By.css(elm)), 5000);
+                await wait(100);
                 return;
             } else if (element[i].includes("XPATH=")) {
                 elm = element[i].replace("XPATH=", "");
                 await driver.wait(until.elementLocated(By.xpath(elm)), 5000);
+                await wait(100);
+                return;
+            } else if (element[i].includes("CLASS=")) {
+                elm = element[i].replace("CLASS=", "");
+                await driver.wait(until.elementLocated(By.className(elm)), 5000);
+                await wait(100);
+                return;
+            } else if (element[i].includes("NAME=")) {
+                elm = element[i].replace("NAME=", "");
+                await driver.wait(until.elementLocated(By.name(elm)), 5000);
+                await wait(100);
                 return;
             }
         }

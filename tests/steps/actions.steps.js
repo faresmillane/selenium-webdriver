@@ -50,7 +50,6 @@ Given("I access in the <{word}> screen", async (element) => {
 
 Given("I access to <{word}> screen between <{word}> page", async (screen, page) => {
   await utils.accessToGoodPage(`${process.env.BASE_URL}${pages[page].urls[screen]}`);
-  await actions.wait(2000);
 });
 
 Given("I am in the <{word}> screen", async (element) => {
@@ -66,6 +65,7 @@ Given("I see the <{word}> label", async (element) => {
 
 /*clicks*/
 Given("I click on the <{word}> button", async (element) => {
+  await actions.waitElement(pages[page].locators[element]);
   await actions.clickWeb(pages[page].locators[element]);
 });
 
@@ -74,6 +74,7 @@ Given("I click on my <{word}> <{word}> user", async (element, user) => {
 });
 
 Given("I click on the <{word}> submit button", async (element) => {
+  await actions.waitElement(pages[page].locators[element]);
   await actions.clickBox(pages[page].locators[element]);
 });
 
@@ -84,5 +85,6 @@ Given("I am a <{word}> user", async (user) => {
 });
 
 Given("I fill my <{word}> <{word}> user", async (element, user) => {
+  await actions.waitElement(pages[page].locators[element]);
   await actions.fillTextWeb(pages[page].locators[element], data[user][element]);
 });

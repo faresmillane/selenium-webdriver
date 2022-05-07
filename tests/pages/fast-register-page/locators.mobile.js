@@ -1,80 +1,58 @@
 module.exports = {
     fast_register_page:[
+        "SELECTOR=#jahiaContent > div.Header-club-BG.bg-pan-right.w-100.flex.justify-center > div > div > div",
         "CLASS=Header-club-content h-100",
+        "ID=fast-register-form-container",
     ],
     fast_page_header:[
         "ID=header",
         "SELECTOR=#header",
         "XPATH=//*[@id='header']"
     ],
-    login_email:[
-        "NAME=j_username",
+    inscription:[
+        "XPATH=//*[@id='jahiaContent']/div[2]/div/div/div/div[3]/div/a[1]/p",
     ],
-    login_password:[
-        "NAME=j_password",
-    ],
-    me_connecter:[
-        "NAME=submitLogin",
-        "XPATH=//*[@id='content']/section[1]/form/div/div[2]/span/span"
-    ],
-    continuer:[
-        "SELECTOR=#content > section.newUser > div > a > div > button",
-        "XPATH=//*[@id='content']/section[2]/div/a/div/button]"
+    connexion:[
+        "XPATH=//*[@id='jahiaContent']/div[2]/div/div/div/div[3]/div/a[2]/p"
     ],
     signup_email:[
-        "ID=userEmail",
-        "SELECTOR=#userEmail",
-        "XPATH=//*[@id='userEmail']"
+        "NAME=email",
+        "SELECTOR=#fast-register-form-container > div > div.style_scrollable_container_icU.utils_p_16_1S5 > div > div > div > form > div > div > div > input",
+        "XPATH=//*[@id='fast-register-form-container']/div/div[2]/div/div/div/form/div/div/div/input"
     ],
-    signup_email_confirm:[
-        "ID=e_mail2",
-        "SELECTOR=#e_mail2",
-        "XPATH=//*[@id='e_mail2']"
+    continuer:[
+        "CLASS=Button_rkt__btn_n-J Button_red-o_37t utils_full_width_3gi",
+        "SELECTOR=#fast-register-form-container > div > div.style_scrollable_container_icU.utils_p_16_1S5 > div > div > div > form > button",
+        "XPATH=//*[@id='fast-register-form-container']/div/div[2]/div/div/div/form/button"
     ],
     signup_password:[
-        "ID=userPassword",
-        "SELECTOR=#userPassword",
-        "XPATH=//*[@id='userPassword']"
+        "NAME=password",
+        "SELECTOR=#fast-register-form-container > div > div.style_scrollable_container_icU.utils_p_16_1S5 > div > div.style_form_sub_container_X6o > div > form > div.forms_group_2lP.utils_align_left_3Tz.utils_full_width_3gi > div > div > div > div > input",
+        "XPATH=//*[@id='fast-register-form-container']/div/div[2]/div/div[1]/div/form/div[1]/div/div/div/div/input"
     ],
-    mrs_gender:[
-        "XPATH=//*[@id='frm_subscription']/fieldset[1]/div[4]/div[1]/div/label/span/span[2]",
+    sinscrire:[
+        "CLASS=Button_rkt__btn_n-J Button_red_3z8 utils_full_width_3gi",
+        "SELECTOR=#fast-register-form-container > div > div.style_scrollable_container_icU.utils_p_16_1S5 > div > div.style_form_sub_container_X6o > div > form > button",
+        "XPATH=//*[@id='fast-register-form-container']/div/div[2]/div/div[1]/div/form/button"
     ],
-    mr_gender:[
-        "XPATH=//*[@id='frm_subscription']/fieldset[1]/div[4]/div[2]/div/label/span/span[2]",
+    club_r_popin:[
+        "CLASS=style_fastRegisterContainer_1ft",
+        "SELECTOR=#clubRWelcomePopin > div > div > div > div.style_body_aSw > div",
+        "XPATH=//*[@id='clubRWelcomePopin']/div/div/div/div[2]/div"
     ],
-    first_name:[
-        "ID=userFirstName",
-        "SELECTOR=#userFirstName",
-        "XPATH=//*[@id='userFirstName']"
+    login_email:[
+        "ID=e_mail",
+        "SELECTOR=#e_mail",
+        "XPATH=//*[@id='e_mail']"
     ],
-    last_name:[
-        "ID=userLastName",
-        "SELECTOR=#userLastName",
-        "XPATH=//*[@id='userLastName']"
-    ],
-    day_of_birth:[
-        "ID=birthDay",
-        "SELECTOR=#birthDay",
-        "XPATH=//*[@id='birthDay']"
-    ],
-    month_of_birth:[
-        "ID=birthMonth",
-        "SELECTOR=#birthMonth",
-        "XPATH=//*[@id='birthMonth']"
-    ],
-    year_of_birth:[
-        "ID=birthYear",
-        "SELECTOR=#birthYear",
-        "XPATH=//*[@id='birthYear']"
-    ],
-    creer_compte:[
-        "ID=submitSubscription",
-        "SELECTOR=#submitSubscription",
-        "XPATH=//*[@id='submitSubscription']"
+    login_password:[
+        "ID=password",
+        "SELECTOR=#password",
+        "XPATH=//*[@id='password']"
     ],
     bad_credentials:[
-        "ID=migrationErrorNotif",
-        "SELECTOR=#migrationErrorNotif",
-        "XPATH=//*[@id='migrationErrorNotif']"
+        "ID=leadCol",
+        "SELECTOR=#leadCol",
+        "XPATH=//*[@id='leadCol']"
     ],
 }

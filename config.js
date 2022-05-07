@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 module.exports = {
     hostname: "http://localhost:4444/",
     capabilities: {
@@ -18,7 +20,7 @@ module.exports = {
           }
         }
     },
-    headless: true,
+    headless: process.env.HEADLESS || false,
     features: "",
     parallel: 5,
     retry: 1,

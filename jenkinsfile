@@ -40,7 +40,7 @@ pipeline {
                         echo "chrome tests started ..."
                         sh'''
                             cd selenium-webdriver
-                            BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=chrome npm run test:web
+                            HEADLESS=true BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=chrome npm run test:web
                         '''
                         echo "chrome tests : Done"
                     },
@@ -48,7 +48,7 @@ pipeline {
                         echo "firefox tests started ..."
                         sh'''
                             cd selenium-webdriver
-                            BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=firefox npm run test:web
+                            HEADLESS=true BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=firefox npm run test:web
                         '''
                         echo "firefox tests : Done"
                     },
@@ -56,7 +56,7 @@ pipeline {
                         echo "mobile tests started ..."
                         sh'''
                             cd selenium-webdriver
-                            BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=mobile npm run test:mob
+                            HEADLESS=true BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=mobile npm run test:mob
                         '''
                         echo "mobile tests : Done"
                     }

@@ -11,6 +11,7 @@ module.exports = {
     ],
     inscription:[
         "XPATH=//*[@id='jahiaContent']/div[2]/div/div/div/div[3]/div/a[1]/p",
+        "CLASS=Club-header-cta Inscription f14 pointer db tc center pv0-ns ",
     ],
     connexion:[
         "XPATH=//*[@id='jahiaContent']/div[2]/div/div/div/div[3]/div/a[2]/p"

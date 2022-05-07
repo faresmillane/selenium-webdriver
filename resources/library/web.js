@@ -194,11 +194,10 @@ const cookiesAccept = async () => {
     }
 };
 
-const popinsClose = async (element) => {
+const popinsClose = async () => {
     try {
+        await driver.wait(until.elementLocated(By.className("close")), 5000);
         await driver.executeScript(`document.getElementsByClassName("close")[0].click()`);
-        await driver.executeScript(`document.getElementsByClassName("kml-modal-wrapper")[0]`);
-        await driver.findElement(By.className("close")).click();
     }
     catch (error) {
         
@@ -243,30 +242,31 @@ const dismissAlert = async () => {
 const waitToSeeElement = async (element) => {
     try {
         let elm;
+        const timeout = 10000;
         for (let i = 0; i < element.length; i++) {
             if(element[i].includes("ID=")) {
                 elm = element[i].replace("ID=", "");
-                await driver.wait(until.elementLocated(By.id(elm)), 5000);
+                await driver.wait(until.elementLocated(By.id(elm)), timeout);
                 await wait(100);
                 return;
             } else if(element[i].includes("SELECTOR=")) {
                 elm = element[i].replace("SELECTOR=", "");
-                await driver.wait(until.elementLocated(By.css(elm)), 5000);
+                await driver.wait(until.elementLocated(By.css(elm)), timeout);
                 await wait(100);
                 return;
             } else if (element[i].includes("XPATH=")) {
                 elm = element[i].replace("XPATH=", "");
-                await driver.wait(until.elementLocated(By.xpath(elm)), 5000);
+                await driver.wait(until.elementLocated(By.xpath(elm)), timeout);
                 await wait(100);
                 return;
             } else if (element[i].includes("CLASS=")) {
                 elm = element[i].replace("CLASS=", "");
-                await driver.wait(until.elementLocated(By.className(elm)), 5000);
+                await driver.wait(until.elementLocated(By.className(elm)), timeout);
                 await wait(100);
                 return;
             } else if (element[i].includes("NAME=")) {
                 elm = element[i].replace("NAME=", "");
-                await driver.wait(until.elementLocated(By.name(elm)), 5000);
+                await driver.wait(until.elementLocated(By.name(elm)), timeout);
                 await wait(100);
                 return;
             }

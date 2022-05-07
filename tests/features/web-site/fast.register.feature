@@ -14,3 +14,4 @@ Feature: Fast register
     And I fill my <signup_password> <new> user
     And I click on the <sinscrire> button
     Then I access in the <fast_register_page> screen
+    And I see the <club_r_popin> label

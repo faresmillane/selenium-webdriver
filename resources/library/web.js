@@ -261,7 +261,7 @@ const dismissAlert = async () => {
 const waitToSeeElement = async (element) => {
     try {
         let elm;
-        const timeout = 10000;
+        const timeout = 6000;
         for (let i = 0; i < element.length; i++) {
             if(element[i].includes("ID=")) {
                 elm = element[i].replace("ID=", "");

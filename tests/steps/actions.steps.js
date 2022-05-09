@@ -1,7 +1,7 @@
 /*********************************************************imports******************************************************/
 require('dotenv').config()
 const { Given, When, Then, setDefaultTimeout, BeforeAll, AfterAll, AfterStep } = require("@cucumber/cucumber");
-setDefaultTimeout(60 * 1000);
+setDefaultTimeout(100 * 1000);
 const actions = require("../../helpers/actions");
 const utils = require("../../helpers/utils");
 const dataGen = require("../../helpers/data");

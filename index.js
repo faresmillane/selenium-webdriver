@@ -1,15 +1,24 @@
-const webdriver = require('selenium-webdriver');
-const {Builder, By, Key, until} = require('selenium-webdriver');
+const { Builder, By } = require('selenium-webdriver');
 
 (async function example() {
-    let driver = new webdriver.Builder()
-    .forBrowser('chrome')
-    .usingServer('http://localhost:4444/')
-    .build();
+  var capabilities = {
+    browserName: 'chrome',
+    "goog:chromeOptions": {
+//      mobileEmulation: { "deviceName": "Nexus 5" },
+      args: ["--no-sandbox", "--disable-dev-shm-usage"]
+  }
+  }; 
+        const driver = await new Builder()
+        .usingServer("http://localhost:4444/")
+        .withCapabilities(capabilities)
+        .build();
   try {
-    await driver.get('http://www.google.com/ncr');
-    //await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
-    //await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+    await driver.get('https://www4.rakqa.fr');
+    await driver.manage().window().maximize();
+    el = await driver.findElement(By.className("didomi_accept_button notice-module_btnStyle_+Sh notice-module_acceptAndCloseBtnStyle_Tpr "))
+    .click();
+    await driver.get('https://www4.rakqa.fr/event/club-rakuten');
+    await new Promise(resolve => setTimeout(resolve, 5000));
   } finally {
     await driver.quit();
   }

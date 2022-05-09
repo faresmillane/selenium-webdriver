@@ -1,0 +1,105 @@
+pipeline {
+   agent {
+       label 'tools-qa'
+    }
+   parameters {
+      string(defaultValue: "develop", description: 'On which automation repository branch ?', name: 'BRANCH_NAME')
+      choice(name: 'RAKQA_ENV', choices: ['7', '1', '2', '3', '4', '5', '6', '8', '9', '10', '11'], description: 'on which environment ?')
+      choice(name: 'SEND_REPORT', choices: ['no', 'yes'])
+   } 
+   stages {
+         stage("Preparation & install"){
+            steps{
+            script {
+                	wrap([$class: 'BuildUser']) {
+                	    if (currentBuild.getBuildCauses()[0].shortDescription.contains('timer') == true){
+                            currentBuild.displayName = "Started by jenkins timer on www${RAKQA_ENV}.rakqa.fr env"
+                        } else {
+                            currentBuild.displayName = "Started by ${BUILD_USER_FIRST_NAME} on www${RAKQA_ENV}.rakqa.fr env"
+                        }
+                            currentBuild.description = "branch: ${BRANCH_NAME}."
+                    }
+               }
+               echo "Preparation & install dependencies ..."
+               sh '''
+                    export PATH=/usr/local/bin:$PATH
+                    git clone https://github.com/faresmillane/selenium-webdriver.git -b ${BRANCH_NAME}
+                    cd selenium-webdriver
+                    mkdir reports
+                    pwd
+                    node -v
+                    npm ci
+               '''
+               echo "Preparation & installation : Done"
+            }
+         }
+         stage("Run tests"){
+             steps {    
+                   parallel(
+                    'Chrome': {
+                        echo "chrome tests started ..."
+                        sh'''
+                            cd selenium-webdriver
+                            BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=chrome npm run test:web
+                        '''
+                        echo "chrome tests : Done"
+                    },
+                    'Firefox': {
+                        echo "firefox tests started ..."
+                        sh'''
+                            cd selenium-webdriver
+                            BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=firefox npm run test:web
+                        '''
+                        echo "firefox tests : Done"
+                    },
+                    'Mobile': {
+                        echo "mobile tests started ..."
+                        sh'''
+                            cd selenium-webdriver
+                            BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=mobile npm run test:mob
+                        '''
+                        echo "mobile tests : Done"
+                    }
+                )
+            }
+         }
+    } 
+    post {
+        always {
+            echo "generating report..."
+                cucumber buildStatus: 'UNSTABLE',
+                    reportTitle: 'firefox report',
+                    fileIncludePattern: 'selenium-webdriver/reports/cucumber-report-firefox.json',
+                    trendsLimit: 10,
+                    classifications: [
+                        [
+                            'key': 'Browser',
+                            'value': 'Firefox'
+                        ]
+                    ]
+                cucumber buildStatus: 'UNSTABLE',
+                    reportTitle: 'chrome report',
+                    fileIncludePattern: 'selenium-webdriver/reports/cucumber-report-chrome.json',
+                    trendsLimit: 10,
+                    classifications: [
+                        [
+                            'key': 'Browser',
+                            'value': 'Chrome'
+                        ]
+                    ]
+                cucumber buildStatus: 'UNSTABLE',
+                    reportTitle: 'mobile report',
+                    fileIncludePattern: 'selenium-webdriver/reports/cucumber-report-mobile.json',
+                    trendsLimit: 10,
+                    classifications: [
+                        [
+                            'key': 'Browser',
+                            'value': 'Chrome mobile'
+                        ]
+                    ]
+                }
+            cleanup {
+                deleteDir()
+        }
+    }
+}

@@ -1,10 +1,18 @@
 const web = require('../resources/library/web');
-const pages = require('./../tests/pages');
+const assert = require('node:assert');
+require('dotenv').config()
 
   const clearHomePagePopUp = async () => {
-        await web.click(pages["home_page"].locators["cookies_accept"]);
-    }
+    web.cookiesAccept();
+    web.popinsClose();
+  }
+
+  const accessToGoodPage = async (expectedUrl) => {
+    const currentUrl = await web.getCurrentUrl(expectedUrl);
+    assert.strictEqual(expectedUrl, currentUrl)
+  }
 
   module.exports = {
     clearHomePagePopUp,
+    accessToGoodPage
 };

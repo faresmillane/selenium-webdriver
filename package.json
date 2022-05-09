@@ -4,6 +4,7 @@
   "scripts": {
     "selenium:server": "./node_modules/.bin/selenium",
     "test:web": "./node_modules/.bin/cucumber-js tests/features/web-site/*.feature",
+    "test:mob": "./node_modules/.bin/cucumber-js tests/features/mob-site/*.feature",
     "test:api": "./node_modules/.bin/cucumber-js tests/features/api/*.feature"
   },
   "author": "FM",

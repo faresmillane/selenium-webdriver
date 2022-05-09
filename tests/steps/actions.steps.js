@@ -1,6 +1,6 @@
 /*********************************************************imports******************************************************/
 require('dotenv').config()
-const { Given, When, Then, setDefaultTimeout, BeforeAll, AfterAll } = require("@cucumber/cucumber");
+const { Given, When, Then, setDefaultTimeout, BeforeAll, AfterAll, AfterStep } = require("@cucumber/cucumber");
 setDefaultTimeout(60 * 1000);
 const actions = require("../../helpers/actions");
 const utils = require("../../helpers/utils");
@@ -34,7 +34,7 @@ Given("I start my navigator in <{word}>", async (url) => {
   page = url;
   await actions.navigate(`${process.env.BASE_URL}${pages[page].urls[url]}`);
   await actions.maximizeWindow();
-  await utils.clearHomePagePopUp();
+  await utils.clearHomePage();
   await actions.wait(1000);
 });
 

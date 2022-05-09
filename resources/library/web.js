@@ -1,7 +1,7 @@
 const { By, until } = require('selenium-webdriver');
 const drivers = require("./drivers");
 const shared = require ('../error');
-require('dotenv').config()
+require('dotenv').config();
 let driver;
 
 async function getElement (element) {
@@ -136,7 +136,7 @@ const findElement = async (element) => {
         if(el) {
             return el;
         } else {
-            shared.manageElementError(element)
+            shared.manageElementError(element);
         }
         
     }
@@ -194,6 +194,15 @@ const cookiesAccept = async () => {
     }
 };
 
+const deleteAllCookies = async () => {
+    try {
+        await driver.manage().deleteAllCookies();
+    }
+    catch (error) {
+        
+    }
+};
+
 const popinsClose = async () => {
     try {
         await driver.wait(until.elementLocated(By.className("close")), 5000);
@@ -222,6 +231,16 @@ const quitDriver = async () => {
         await shared.manageError('quit driver error: ', error);
     }
 };
+
+const takeScreenshot = async () => {
+    try {
+        const encodedString = await driver.takeScreenshot();
+        return encodedString;
+    }
+    catch {
+        console.log("can not take screenshot")
+    }
+}
 
 const dismissAlert = async () => {
     try {
@@ -316,5 +335,7 @@ module.exports = {
     elementIsDisplayed,
     cookiesAccept,
     getCurrentUrl,
-    popinsClose
+    popinsClose,
+    takeScreenshot,
+    deleteAllCookies
 };

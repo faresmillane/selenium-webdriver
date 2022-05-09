@@ -14,7 +14,8 @@ module.exports = {
         "CLASS=Club-header-cta Inscription f14 pointer db tc center pv0-ns ",
     ],
     connexion:[
-        "XPATH=//*[@id='jahiaContent']/div[2]/div/div/div/div[3]/div/a[2]/p"
+        "XPATH=//*[@id='jahiaContent']/div[2]/div/div/div/div[3]/div/a[2]/p",
+        "CLASS=Club-header-cta Connexion f14 pointer db tc center pv0-ns",
     ],
     signup_email:[
         "NAME=email",

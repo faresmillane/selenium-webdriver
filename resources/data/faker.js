@@ -28,6 +28,11 @@ const randomPassword = () => `${faker.lorem.word()}.@A${faker.datatype.number()}
 
 const randomId = () => faker.datatype.uuid();
 
+const randomGender = () => {
+  const myArray = ['mr_gender', 'mrs_gender'];
+  return myArray[Math.floor(Math.random() * myArray.length)];
+};
+
 const randomProduct = () => {
   const myArray = ['galaxy', 'iphone', 'samsung', 'lg', 'Xiomi'];
   return myArray[Math.floor(Math.random() * myArray.length)];
@@ -50,7 +55,8 @@ const rakuten = {
     randomId,
     randomProduct,
     dbbRandomMail,
-    randomNav
+    randomNav,
+    randomGender
 };
 
 module.exports = rakuten;

@@ -6,7 +6,7 @@ Feature: Fast register
     Then I navigate to "fast_register_page"
 
   @FastRegisterCreation
-    Scenario: I can sign up using fast register
+    Scenario: I can sign up using fast register (disable parallel)
     Given I am a "new" user 
     When I click on the "inscription" button
     And I fill my "signup_email" "new" user
@@ -15,9 +15,10 @@ Feature: Fast register
     And I fill my "signup_password" "new" user
     And I click on the "sinscrire" button
     Then I access in the "fast_register_page" screen
-  
+    And I see the "club_r_popin" label
+
   @FrGoodAuthenticate
-  Scenario: I can login using good fast register credentials
+  Scenario: I can login using good fast register credentials (disable parallel)
     Given I am a "registered" user 
     And I click on the "connexion" button
     And I access in the "login_page" screen
@@ -27,7 +28,7 @@ Feature: Fast register
     Then I access in the "fast_register_page" screen
 
   @FrBadAuthenticate
-  Scenario: I canot login using bad fast register credentials
+  Scenario: I canot login using bad fast register credentials (disable parallel)
     Given I am a "unknow" user 
     And I click on the "connexion" button
     And I access in the "login_page" screen

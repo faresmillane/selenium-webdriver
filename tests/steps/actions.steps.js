@@ -1,7 +1,15 @@
 /*********************************************************imports******************************************************/
 require('dotenv').config()
-const { Given, setDefaultTimeout, BeforeAll, AfterAll } = require("@cucumber/cucumber");
-setDefaultTimeout(60 * 1000);
+const { Given, setDefaultTimeout, AfterAll,setParallelCanAssign, BeforeAll } = require("@cucumber/cucumber");
+setParallelCanAssign(function(pickleInQuestion, picklesInProgress) {
+  // Only one pickle with the word (disable parallel) in the name can run at a time
+  if (pickleInQuestion.name.includes("(disable parallel)")) {
+    return picklesInProgress.every(p => !p.name.includes("(disable parallel)"));
+  }
+  // No other restrictions
+  return true;
+});
+setDefaultTimeout(100 * 1000);
 const actions = require("../../helpers/actions");
 const utils = require("../../helpers/utils");
 const dataGen = require("../../helpers/data");
@@ -30,7 +38,7 @@ let data = {
 /*******************************************************definitions***************************************************/
 
 /*navigation*/
-Given("I start my navigator in <{word}>", async (url) => {
+Given("I start my navigator in {string}", async (url) => {
   page = url;
   await actions.navigate(`${process.env.BASE_URL}${pages[page].urls[url]}`);
   await actions.maximizeWindow();
@@ -38,53 +46,53 @@ Given("I start my navigator in <{word}>", async (url) => {
   await actions.wait(1000);
 });
 
-Given("I navigate to <{word}>", async (url) => {
+Given("I navigate to {string}", async (url) => {
   page = url;
   await actions.navigate(`${process.env.BASE_URL}${pages[page].urls[url]}`);
 });
 
-Given("I access in the <{word}> screen", async (element) => {
+Given("I access in the {string} screen", async (element) => {
   page = element;
   await utils.accessToGoodPage(`${process.env.BASE_URL}${pages[page].urls[element]}`);
 });
 
-Given("I access to <{word}> screen between <{word}> page", async (screen, page) => {
+Given("I access to {string} screen between {string} page", async (screen, page) => {
   await utils.accessToGoodPage(`${process.env.BASE_URL}${pages[page].urls[screen]}`);
 });
 
-Given("I am in the <{word}> screen", async (element) => {
+Given("I am in the {string} screen", async (element) => {
   page = element;
   await actions.findElementWeb(pages[page].locators[element]);
 });
 
 /*find elements*/
-Given("I see the <{word}> label", async (element) => {
+Given("I see the {string} label", async (element) => {
   await actions.waitElement(pages[page].locators[element]);
   await actions.findElementWeb(pages[page].locators[element]);
 });
 
 /*clicks*/
-Given("I click on the <{word}> button", async (element) => {
+Given("I click on the {string} button", async (element) => {
   await actions.waitElement(pages[page].locators[element]);
   await actions.clickWeb(pages[page].locators[element]);
 });
 
-Given("I click on my <{word}> <{word}> user", async (element, user) => {
+Given("I click on my {string} {string} user", async (element, user) => {
   await actions.clickBox(pages[page].locators[data[user][element]]);
 });
 
-Given("I click on the <{word}> submit button", async (element) => {
+Given("I click on the {string} submit button", async (element) => {
   await actions.waitElement(pages[page].locators[element]);
   await actions.clickBox(pages[page].locators[element]);
 });
 
 /*data*/
-Given("I am a <{word}> user", async (user) => {
+Given("I am a {string} user", async (user) => {
   data[user] = await dataGen.getUser(user);
   await actions.wait(2000);
 });
 
-Given("I fill my <{word}> <{word}> user", async (element, user) => {
+Given("I fill my {string} {string} user", async (element, user) => {
   await actions.waitElement(pages[page].locators[element]);
   await actions.fillTextWeb(pages[page].locators[element], data[user][element]);
 });

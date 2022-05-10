@@ -3,9 +3,9 @@ const assert = require('node:assert');
 require('dotenv').config()
 
   const clearHomePage = async () => {
-    web.cookiesAccept();
-    web.popinsClose();
-    web.deleteAllCookies();
+    await web.cookiesAccept();
+    await web.popinsClose();
+    await web.deleteAllCookies();
   }
 
   const accessToGoodPage = async (expectedUrl) => {
@@ -18,8 +18,13 @@ require('dotenv').config()
     return screenshot;
   }
 
+  const clearCookies = async () => {
+    web.deleteAllCookies();
+  }
+
   module.exports = {
     clearHomePage,
     accessToGoodPage,
-    takeScreenshot
+    takeScreenshot,
+    clearCookies
 };

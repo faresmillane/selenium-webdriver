@@ -1,7 +1,7 @@
 Feature: Add to cart
 
  Background:
-    Given I start my navigator in <home_page>
+#    Given I start my navigator in <home_page>
 
 
 

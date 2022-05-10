@@ -26,5 +26,25 @@ Feature: Navigation
     And I see the "inscription" label
     And I see the "connexion" label
 
+  @CartPage
+  Scenario: navigate to cart page 
+    Given I navigate to "cart_page"
+    When I access in the "cart_page" screen
+    Then I see the "cart_page_header" label
+    And I see the "cart_page" label
+  
+  @SearchPage
+  Scenario: navigate to cart page 
+    Given I navigate to "search_page"
+    When I access in the "search_page" screen
+    Then I see the "search_page_header" label
+    And I see the "search_page" label
+  
+  @NavPage
+  Scenario: navigate to cart page 
+    Given I navigate to "nav_page"
+    When I access in the "nav_page" screen
+    Then I see the "nav_page_header" label
+    And I see the "nav_page" label  
 # FP
 # vérifier le montant min RSP

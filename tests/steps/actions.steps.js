@@ -72,7 +72,6 @@ Given("I am in the {string} screen", async (element) => {
 /*find elements*/
 Given("I see the {string} label", async (element) => {
   await actions.waitElement(pages[page].locators[element]);
-  await actions.findElementWeb(pages[page].locators[element]);
 });
 
 /*clicks*/

@@ -4,7 +4,8 @@ const account_page = require('./account-page');
 const fast_register_page = require('./fast-register-page');
 const cart_page = require('./cart-page');
 const search_page = require('./search-page');
-const nav_page = require('./nav-page')
+const nav_page = require('./nav-page');
+const offer_page = require('./offer-page');
 
 module.exports = {
     home_page,
@@ -13,5 +14,6 @@ module.exports = {
     fast_register_page,
     cart_page,
     search_page,
-    nav_page
+    nav_page,
+    offer_page
 };

@@ -10,7 +10,7 @@ const randomPin = (len) => {
   return randomPin;
 };
 
-const randomMail = (id) => `rakuten.qa+${id}@gmail.com`;
+const randomMail = (id) => `rakuten.quality+${id}@gmail.com`;
 
 const randomBirthDate = () => {
   let start = new Date(1950, 0, 1);
@@ -39,7 +39,7 @@ const randomProduct = () => {
 };
 
 const randomNav = () => {
-  const myArray = ['Tel-PDA_Telephones-mobiles'];
+  const myArray = ['Tel-PDA_Telephones-mobiles', 'Maison_mobilier_tables-consoles', 'Hifi_appareils-photo'];
   return myArray[Math.floor(Math.random() * myArray.length)];
 };
 

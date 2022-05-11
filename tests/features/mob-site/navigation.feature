@@ -39,12 +39,14 @@ Feature: Navigation
     When I access in the "search_page" screen
     Then I see the "search_page_header" label
     And I see the "search_page" label
+    And I see the "search_listing_product" label
   
   @NavPage
   Scenario: navigate to cart page 
     Given I navigate to "nav_page"
     When I access in the "nav_page" screen
     Then I see the "nav_page_header" label
-    And I see the "nav_page" label  
+    And I see the "nav_page" label
+    And I see the "product_block" label  
 # FP
 # vérifier le montant min RSP

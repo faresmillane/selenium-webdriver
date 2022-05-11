@@ -6,11 +6,6 @@ let driver;
 
 async function getElement (element) {
     try {
-        const pop = await driver.executeScript("document.querySelector('.popin-newsletter')");
-        if(pop){
-            await driver.executeScript("document.querySelector('.popin-newsletter').click()");
-            console.log("oui el est la")
-        }
         let el, elm;
         for (let i = 0; i < element.length; i++) {
             try {
@@ -266,7 +261,7 @@ const dismissAlert = async () => {
 const waitToSeeElement = async (element) => {
     try {
         let elm;
-        const timeout = 6000;
+        const timeout = 10000;
         for (let i = 0; i < element.length; i++) {
             if(element[i].includes("ID=")) {
                 elm = element[i].replace("ID=", "");

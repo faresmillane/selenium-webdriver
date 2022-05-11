@@ -7,4 +7,7 @@ module.exports = {
         "SELECTOR=#header",
         "XPATH=//*[@id='header']"
     ],
+    search_listing_product:[
+        "XPATH=//*[@data-qa='productListing']",
+    ],
 }

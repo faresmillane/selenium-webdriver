@@ -7,4 +7,7 @@ module.exports = {
         "SELECTOR=#header",
         "XPATH=//*[@id='header']"
     ],
+    product_block:[
+        "XPATH=//*[@data-qa='sdt_p']",
+    ],
 }

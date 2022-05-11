@@ -9,7 +9,7 @@ setParallelCanAssign(function(pickleInQuestion, picklesInProgress) {
   // No other restrictions
   return true;
 });
-setDefaultTimeout(100 * 1000);
+setDefaultTimeout(100 * 2 * 1000);
 const actions = require("../../helpers/actions");
 const utils = require("../../helpers/utils");
 const dataGen = require("../../helpers/data");
@@ -48,6 +48,10 @@ Given("I start my navigator in {string}", async (url) => {
 
 Given("I navigate to {string}", async (url) => {
   page = url;
+  await actions.navigate(`${process.env.BASE_URL}${pages[page].urls[url]}`);
+});
+
+Given("I navigate to {string} in {string} page", async (url, page) => {
   await actions.navigate(`${process.env.BASE_URL}${pages[page].urls[url]}`);
 });
 

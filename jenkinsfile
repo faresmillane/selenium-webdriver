@@ -42,7 +42,6 @@ pipeline {
                                 sh'''
                                     cd selenium-webdriver
                                     HEADLESS=true BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=chrome npm run test:web
-                                    DRIVER=chrome node resources/status.js
                                 '''
                                 echo "chrome tests : Done"
                             },
@@ -51,7 +50,6 @@ pipeline {
                                 sh'''
                                     cd selenium-webdriver
                                     HEADLESS=true BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=firefox npm run test:web
-                                    DRIVER=chrome node resources/status.js
                                 '''
                                 echo "firefox tests : Done"
                             },
@@ -60,11 +58,16 @@ pipeline {
                                 sh'''
                                     cd selenium-webdriver
                                     HEADLESS=true BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=mobile npm run test:mob
-                                    DRIVER=chrome node resources/status.js
                                 '''
                                 echo "mobile tests : Done"
                             }
                         )
+                        sh'''
+                        cd selenium-webdriver
+                        DRIVER=chrome node resources/status.js
+                        DRIVER=firefox node resources/status.js
+                        DRIVER=mobile node resources/status.js
+                        '''
                     }
                     catch (Exception e) {
                         if(manager.logContains("tests failed")) {

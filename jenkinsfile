@@ -25,7 +25,6 @@ pipeline {
                     export PATH=/usr/local/bin:$PATH
                     git clone https://github.com/faresmillane/selenium-webdriver.git -b ${BRANCH_NAME}
                     cd selenium-webdriver
-                    mkdir reports
                     pwd
                     node -v
                     npm ci
@@ -34,35 +33,49 @@ pipeline {
             }
          }
          stage("Run tests"){
-             steps {    
-                   parallel(
-                    'Chrome': {
-                        echo "chrome tests started ..."
-                        sh'''
-                            cd selenium-webdriver
-                            HEADLESS=true BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=chrome npm run test:web
-                        '''
-                        echo "chrome tests : Done"
-                    },
-                    'Firefox': {
-                        echo "firefox tests started ..."
-                        sh'''
-                            cd selenium-webdriver
-                            HEADLESS=true BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=firefox npm run test:web
-                        '''
-                        echo "firefox tests : Done"
-                    },
-                    'Mobile': {
-                        echo "mobile tests started ..."
-                        sh'''
-                            cd selenium-webdriver
-                            HEADLESS=true BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=mobile npm run test:mob
-                        '''
-                        echo "mobile tests : Done"
+             steps {   
+                 script {
+                     try { 
+                        parallel(
+                            'Chrome': {
+                                echo "chrome tests started ..."
+                                sh'''
+                                    cd selenium-webdriver
+                                    HEADLESS=true BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=chrome npm run test:web
+                                    DRIVER=chrome node resources/status.js
+                                '''
+                                echo "chrome tests : Done"
+                            },
+                            'Firefox': {
+                                echo "firefox tests started ..."
+                                sh'''
+                                    cd selenium-webdriver
+                                    HEADLESS=true BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=firefox npm run test:web
+                                    DRIVER=chrome node resources/status.js
+                                '''
+                                echo "firefox tests : Done"
+                            },
+                            'Mobile': {
+                                echo "mobile tests started ..."
+                                sh'''
+                                    cd selenium-webdriver
+                                    HEADLESS=true BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=mobile npm run test:mob
+                                    DRIVER=chrome node resources/status.js
+                                '''
+                                echo "mobile tests : Done"
+                            }
+                        )
                     }
-                )
+                    catch (Exception e) {
+                        if(manager.logContains("tests failed")) {
+                            currentBuild.result = 'FAILURE'
+                        } else {
+                            currentBuild.result = 'UNSTABLE'
+                        }
+                    }
+                }
             }
-         }
+        }
     } 
     post {
         always {

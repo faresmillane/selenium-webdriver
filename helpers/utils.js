@@ -3,7 +3,6 @@ const assert = require('node:assert');
 require('dotenv').config()
 
   const clearHomePage = async () => {
-    await web.cookiesAccept();
     await web.deleteAllCookies();
   }
 

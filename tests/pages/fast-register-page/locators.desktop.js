@@ -38,9 +38,9 @@ module.exports = {
         "XPATH=//*[@id='fast-register-form-container']/div/div[2]/div/div[1]/div/form/button"
     ],
     club_r_popin:[
+        "XPATH=//*[@data-qa='clubRWelcomePopin']",
         "CLASS=style_fastRegisterContainer_1ft",
-        "SELECTOR=#clubRWelcomePopin > div > div > div > div.style_body_aSw > div",
-        "XPATH=//*[@id='clubRWelcomePopin']/div/div/div/div[2]/div"
+        "SELECTOR=#clubRWelcomePopin > div > div > div > div.style_body_aSw > div",  
     ],
     login_email:[
         "ID=e_mail",

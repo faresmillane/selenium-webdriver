@@ -206,9 +206,9 @@ const deleteAllCookies = async () => {
 const popinsClose = async () => {
     try {
         await driver.executeScript("var elm = document.getElementsByClassName('kml-modale')[0]; if (elm) elm.style.display='none';");
+        await driver.executeScript("var elm = document.getElementsByClassName('didomi_accept_button btnStyle acceptAndCloseBtnStyle')[0]; if (elm) elm.click();");
     }
     catch (error) {
-        
     }
 };
 

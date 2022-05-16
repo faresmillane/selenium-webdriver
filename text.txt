@@ -1,0 +1,16 @@
+web-service tests :
+1-
+POST : https://ws7.rakqa.fr/restpublic/buy-apps/cart/add?version=2&channelType=BUYER_SMARTPHONE_APP&channel=buyerapp
+Auth: none
+Body 
+{
+"channel": "buyerapp",
+"buyerId": "119527492", // a stocket et à réutuliser
+"itmSourceCode": "10", // 10 et 20 obligatoire
+"advertId": "6066662470", // a stocket et à réutuliser // faire une liste random // aid = advertId
+"buyerCountryId": "249" // a stocket et à réutuliser
+}
+check response:
+- check status 201
+- check body : cartId + token
+- check response.addedItem.advertId == Body.advertId

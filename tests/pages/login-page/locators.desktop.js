@@ -4,6 +4,9 @@ module.exports = {
         "SELECTOR=#location",
         "XPATH=//*[@id='location']"
     ],
+    login_page_header:[
+        "CLASS=Hea1",
+    ],
     login_email:[
         "ID=auth_user_identifier",
         "SELECTOR=#auth_user_identifier",

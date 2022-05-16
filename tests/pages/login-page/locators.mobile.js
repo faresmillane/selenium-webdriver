@@ -4,6 +4,9 @@ module.exports = {
         "SELECTOR=#content",
         "XPATH=//*[@id='content']"
     ],
+    login_page_header:[
+        "CLASS=Hea1",
+    ],
     login_email:[
         "NAME=j_username",
     ],

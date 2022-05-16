@@ -1,6 +1,6 @@
 require('dotenv').config()
 const { Given, When, Then, setDefaultTimeout } = require("@cucumber/cucumber");
-setDefaultTimeout(60 * 1000);
+
 const rest = require("../../helpers/rest");
 let data = {
     unknow: {},

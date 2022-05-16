@@ -1,4 +1,5 @@
 const { Builder, By } = require('selenium-webdriver');
+const fs = require('fs-extra');
 
 (async function example() {
   var capabilities = {
@@ -15,10 +16,13 @@ const { Builder, By } = require('selenium-webdriver');
   try {
     await driver.get('https://www4.rakqa.fr');
     await driver.manage().window().maximize();
-    el = await driver.findElement(By.className("didomi_accept_button notice-module_btnStyle_+Sh notice-module_acceptAndCloseBtnStyle_Tpr "))
-    .click();
-    await driver.get('https://www4.rakqa.fr/event/club-rakuten');
+    
+    await driver.get('https://www4.rakqa.fr/search/iphone');
     await new Promise(resolve => setTimeout(resolve, 5000));
+    el = await driver.findElement(By.xpath("//*[@data-qa='sdt_h1']"))
+    console.log(el);
+    let encodedString = await driver.takeScreenshot();
+    await fs.writeFileSync('./image.png', encodedString, 'base64');
   } finally {
     await driver.quit();
   }

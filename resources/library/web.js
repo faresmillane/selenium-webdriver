@@ -1,7 +1,7 @@
 const { By, until } = require('selenium-webdriver');
 const drivers = require("./drivers");
 const shared = require ('../error');
-require('dotenv').config()
+require('dotenv').config();
 let driver;
 
 async function getElement (element) {
@@ -136,7 +136,7 @@ const findElement = async (element) => {
         if(el) {
             return el;
         } else {
-            shared.manageElementError(element)
+            shared.manageElementError(element);
         }
         
     }
@@ -194,11 +194,19 @@ const cookiesAccept = async () => {
     }
 };
 
-const popinsClose = async (element) => {
+const deleteAllCookies = async () => {
     try {
+        await driver.manage().deleteAllCookies();
+    }
+    catch (error) {
+        
+    }
+};
+
+const popinsClose = async () => {
+    try {
+        await driver.wait(until.elementLocated(By.className("close")), 5000);
         await driver.executeScript(`document.getElementsByClassName("close")[0].click()`);
-        await driver.executeScript(`document.getElementsByClassName("kml-modal-wrapper")[0]`);
-        await driver.findElement(By.className("close")).click();
     }
     catch (error) {
         
@@ -224,6 +232,16 @@ const quitDriver = async () => {
     }
 };
 
+const takeScreenshot = async () => {
+    try {
+        const encodedString = await driver.takeScreenshot();
+        return encodedString;
+    }
+    catch {
+        console.log("can not take screenshot")
+    }
+}
+
 const dismissAlert = async () => {
     try {
         //Click the link to activate the alert
@@ -243,30 +261,31 @@ const dismissAlert = async () => {
 const waitToSeeElement = async (element) => {
     try {
         let elm;
+        const timeout = 10000;
         for (let i = 0; i < element.length; i++) {
             if(element[i].includes("ID=")) {
                 elm = element[i].replace("ID=", "");
-                await driver.wait(until.elementLocated(By.id(elm)), 5000);
+                await driver.wait(until.elementLocated(By.id(elm)), timeout);
                 await wait(100);
                 return;
             } else if(element[i].includes("SELECTOR=")) {
                 elm = element[i].replace("SELECTOR=", "");
-                await driver.wait(until.elementLocated(By.css(elm)), 5000);
+                await driver.wait(until.elementLocated(By.css(elm)), timeout);
                 await wait(100);
                 return;
             } else if (element[i].includes("XPATH=")) {
                 elm = element[i].replace("XPATH=", "");
-                await driver.wait(until.elementLocated(By.xpath(elm)), 5000);
+                await driver.wait(until.elementLocated(By.xpath(elm)), timeout);
                 await wait(100);
                 return;
             } else if (element[i].includes("CLASS=")) {
                 elm = element[i].replace("CLASS=", "");
-                await driver.wait(until.elementLocated(By.className(elm)), 5000);
+                await driver.wait(until.elementLocated(By.className(elm)), timeout);
                 await wait(100);
                 return;
             } else if (element[i].includes("NAME=")) {
                 elm = element[i].replace("NAME=", "");
-                await driver.wait(until.elementLocated(By.name(elm)), 5000);
+                await driver.wait(until.elementLocated(By.name(elm)), timeout);
                 await wait(100);
                 return;
             }
@@ -316,5 +335,7 @@ module.exports = {
     elementIsDisplayed,
     cookiesAccept,
     getCurrentUrl,
-    popinsClose
+    popinsClose,
+    takeScreenshot,
+    deleteAllCookies
 };

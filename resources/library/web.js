@@ -206,11 +206,8 @@ const deleteAllCookies = async () => {
 const popinsClose = async () => {
     try {
         await driver.executeScript("var elm = document.getElementsByClassName('kml-modale')[0]; if (elm) elm.style.display='none';");
-        if (process.env.DRIVER == 'mobile') {
-            await driver.executeScript("var elm = document.getElementsByClassName('didomi_accept_button')[0]; if (elm) elm.click();");
-        } else {
-            await driver.executeScript("var elm = document.getElementsByClassName('didomi_accept_button btnStyle acceptAndCloseBtnStyle')[0]; if (elm) elm.click();");
-        }
+        await driver.executeScript("var elm = document.getElementsByClassName('didomi_accept_button')[0]; if (elm) elm.click();");
+        await driver.executeScript("var elm = document.getElementsByClassName('didomi_accept_button btnStyle acceptAndCloseBtnStyle')[0]; if (elm) elm.click();");
     }
     catch (error) {
     }

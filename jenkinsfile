@@ -73,7 +73,7 @@ pipeline {
                         if(manager.logContains("tests failed")) {
                             currentBuild.result = 'FAILURE'
                         } else {
-                            currentBuild.result = 'UNSTABLE'
+                            currentBuild.result = 'SUCCESS'
                         }
                     }
                 }

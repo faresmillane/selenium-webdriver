@@ -23,7 +23,8 @@ const chromedriver = async () => {
 const geckodriver = async () => {
     try {
         if(config.headless) {
-            options = new firefox.Options().headless();
+            options = new firefox.Options().setBinary()
+            .headless();
             options.addArguments('--no-sandbox');
         } else {
             options = new firefox.Options()

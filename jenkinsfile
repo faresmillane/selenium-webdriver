@@ -62,18 +62,18 @@ pipeline {
                                 echo "mobile tests : Done"
                             }
                         )
-                        sh'''
-                        cd selenium-webdriver
-                        DRIVER=chrome node resources/status.js
-                        DRIVER=firefox node resources/status.js
-                        DRIVER=mobile node resources/status.js
-                        '''
                     }
                     catch (Exception e) {
+                        sh'''
+                            cd selenium-webdriver
+                            DRIVER=chrome node resources/status.js
+                            DRIVER=firefox node resources/status.js
+                            DRIVER=mobile node resources/status.js
+                        '''
                         if(manager.logContains("tests failed")) {
                             currentBuild.result = 'FAILURE'
                         } else {
-                            currentBuild.result = 'UNSTABLE'
+                            currentBuild.result = 'SUCCESS'
                         }
                     }
                 }

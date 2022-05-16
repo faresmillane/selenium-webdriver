@@ -12,10 +12,11 @@ fs.readFile(`./reports/cucumber-report-${process.env.DRIVER}.json`, 'utf8', (err
             for (var k=0 ; k < stream[i].elements[j].steps.length ; k++) { 
                 if(stream[i].elements[j].steps[k].result.status == 'failed') {
                     console.log(`${process.env.DRIVER} tests failed`);
-                    return;
+                    return `${process.env.DRIVER} tests failed`;
                 } 
             }
         }
     }
     console.log(`${process.env.DRIVER} tests passed`);
+    return `${process.env.DRIVER} tests passed`;
 })

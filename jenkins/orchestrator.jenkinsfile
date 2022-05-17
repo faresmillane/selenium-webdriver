@@ -1,0 +1,22 @@
+pipeline {
+   agent {
+       label 'tools-qa'
+    }
+   parameters {
+      choice(name: 'RAKQA_ENV', choices: ['7', '1', '2', '3', '4', '5', '6', '8', '9', '10', '11'], description: 'on which environment ?')
+   } 
+   stages {
+         stage("run tests"){
+             steps{
+                 script{
+                    sh '''
+                        number=$(printf "%02d" ${RAKQA_ENV})
+                        echo $var
+                    '''
+                    number=sh(script: "printf '%02d' ${RAKQA_ENV}", returnStdout: true).trim();
+                    build job: "ENV ${number}", wait: true, parameters: [string(name: 'BRANCH_NAME', value: 'master')]
+                 }
+             }
+         }
+    } 
+}

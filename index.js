@@ -22,6 +22,7 @@ const fs = require('fs-extra');
     el = await driver.findElement(By.xpath("//*[@data-qa='sdt_h1']"))
     console.log(el);
     let encodedString = await driver.takeScreenshot();
+    console.log(encodedString);
     await fs.writeFileSync('./image.png', encodedString, 'base64');
   } finally {
     await driver.quit();

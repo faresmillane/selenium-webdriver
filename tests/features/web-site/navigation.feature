@@ -49,6 +49,5 @@ Feature: Navigation
     And I see the "nav_page" label
     And I see the "category_block" label
 
-# FP
-# vérifier le montant min RSP
-# en étant connecté : https://fr.shopping.rakuten.com/seller/sell-form?step=landing s'assurer de la présence essentiel des éléments
+# https://www5.rakqa.fr/v/vendre
+# https://fr.shopping.rakuten.com/event/club-r-everywhere

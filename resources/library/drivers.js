@@ -7,7 +7,7 @@ const chromedriver = async () => {
     try {
         let capabilities = config.capabilities[process.env.DRIVER];
         if(config.headless) {
-            capabilities['goog:chromeOptions'].args.push("headless", "disable-gpu", "--no-sandbox");
+            capabilities['goog:chromeOptions'].args.push("headless", "disable-gpu", "--no-sandbox", "window-size=1920,1080");
         }
         const driver = await new Builder()
         .withCapabilities(capabilities)
@@ -25,6 +25,7 @@ const geckodriver = async () => {
         if(config.headless) {
             options = new firefox.Options().headless();
             options.addArguments('--no-sandbox');
+            options.addArguments("window-size=1920,1080");
         } else {
             options = new firefox.Options()
         }

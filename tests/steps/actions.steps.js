@@ -1,6 +1,6 @@
 /*********************************************************imports******************************************************/
 require('dotenv').config()
-const { Given, setDefaultTimeout, AfterAll,setParallelCanAssign, BeforeAll } = require("@cucumber/cucumber");
+const { Given, setDefaultTimeout, AfterAll,setParallelCanAssign, BeforeAll, BeforeStep } = require("@cucumber/cucumber");
 setParallelCanAssign(function(pickleInQuestion, picklesInProgress) {
   // Only one pickle with the word (disable parallel) in the name can run at a time
   if (pickleInQuestion.name.includes("(disable parallel)")) {
@@ -30,6 +30,10 @@ let data = {
     await actions.init();
    });
   
+   BeforeStep(async () => {
+    await utils.clearRandomPopin();
+  });
+
   AfterAll(async () => {
     await actions.quitDriverWeb();
   });
@@ -78,6 +82,7 @@ Given("I see the {string} label", async (element) => {
 Given("I click on the {string} button", async (element) => {
   await actions.waitElement(pages[page].locators[element]);
   await actions.clickWeb(pages[page].locators[element]);
+  await actions.wait(200);
 });
 
 Given("I click on my {string} {string} user", async (element, user) => {

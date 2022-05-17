@@ -3,11 +3,12 @@ const assert = require('node:assert');
 require('dotenv').config()
 
   const clearHomePage = async () => {
-    await web.cookiesAccept();
-    await web.popinsClose();
     await web.deleteAllCookies();
   }
 
+  const clearRandomPopin = async () => {
+    await web.popinsClose();
+  }
   const accessToGoodPage = async (expectedUrl) => {
     const currentUrl = await web.getCurrentUrl(expectedUrl);
     assert.strictEqual(expectedUrl, currentUrl)
@@ -26,5 +27,6 @@ require('dotenv').config()
     clearHomePage,
     accessToGoodPage,
     takeScreenshot,
-    clearCookies
+    clearCookies,
+    clearRandomPopin
 };

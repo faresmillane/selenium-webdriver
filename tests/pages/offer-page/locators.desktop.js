@@ -8,9 +8,7 @@ module.exports = {
         "XPATH=//*[@id='header']/div[1]/div/div/div"
     ],
     add_to_cart:[
-        "id=itAddToCart",
-        "CLASS=addToCartBtn",
-        "XPATH=//*[@id='itAddToCart']"
+        "itAddToCart",
     ],
     accept_warranty:[
 //        "CLASS=Button_rkt__btn_n-J Button_black_2CM ",

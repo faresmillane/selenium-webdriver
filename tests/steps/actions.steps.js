@@ -26,24 +26,24 @@ let data = {
 
 /***********************************************************global*****************************************************/
 
-  BeforeAll(async () => {
+  BeforeAll(async function () {
     await actions.init();
    });
   
-  BeforeStep(async () => {
+  BeforeStep(async function () {
     await utils.clearRandomPopin();
   });
 
   AfterStep( function ({result}, callback) {
-    if (result.status != 'PASSED') {
+//    if (result.status != 'PASSED') {
         utils.takeScreenshot().then(screenshot => {
         this.attach(new Buffer.from(screenshot, 'base64'), 'image/png');
         callback();
       });
-    };
+//    };
   });
 
-  AfterAll(async () => {
+  AfterAll(async function () {
     await actions.quitDriverWeb();
   });
 

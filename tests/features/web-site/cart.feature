@@ -7,7 +7,7 @@ Feature: Add to cart
   Scenario: I can add a product to cart
     Given I navigate to "offer_page"
     And I see the "offer_page" label
-    When I click on the "add_to_cart" submit button
+    When I click on the "add_to_cart" button
     And I navigate to "cart_page"
     And I see the "cart_right_panel" label
 

@@ -35,13 +35,12 @@ let data = {
   });
 
   AfterStep( function ({result}, callback) {
-    console.log(result.status)
-    if (result.status === 'PASSED') {
+    if (result.status != 'PASSED') {
         utils.takeScreenshot().then(screenshot => {
         this.attach(new Buffer.from(screenshot, 'base64'), 'image/png');
         callback();
-    });
-    }
+      });
+    };
   });
 
   AfterAll(async () => {

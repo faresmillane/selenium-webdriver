@@ -1,5 +1,6 @@
 module.exports = {
     messages_page:[
+        "CLASS=w-100 pr-16",
         "ID=channelList-root",
         "SELECTOR=#channelList-root",
         "XPATH=//*[@id='channelList-root']"

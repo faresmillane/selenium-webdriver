@@ -34,12 +34,39 @@ const randomGender = () => {
 };
 
 const randomProduct = () => {
-  const myArray = ['galaxy', 'iphone', 'samsung', 'lg', 'Xiomi'];
+  const myArray = [
+    'galaxy', 
+    'iphone', 
+    'samsung', 
+    'lg', 
+    'Xiaomi',
+    'playstation 5',
+    'switch',
+    'ps5',
+    'pack office'
+  ];
   return myArray[Math.floor(Math.random() * myArray.length)];
 };
 
 const randomNav = () => {
-  const myArray = ['Tel-PDA_Telephones-mobiles', 'Maison_mobilier_tables-consoles', 'Hifi_appareils-photo'];
+  const myArray = [
+    'Tel-PDA_Telephones-mobiles', 
+    'Maison_mobilier_tables-consoles', 
+    'Hifi_appareils-photo',
+    'Loisirs_activite-loisirs',
+    'Electromenager_lave-linge',
+    'Jeux-Video-et-Consoles_Consoles',
+    'Jeux-Video-et-Consoles_Jeux-Video',
+    'Informatique_Ordinateur-de-bureau',
+    'Informatique_Ordinateur-portable'
+  ];
+  return myArray[Math.floor(Math.random() * myArray.length)];
+};
+
+const randomEvent = () => {
+  const myArray = [
+    'club-r-everywhere',
+  ];
   return myArray[Math.floor(Math.random() * myArray.length)];
 };
 
@@ -56,7 +83,8 @@ const rakuten = {
     randomProduct,
     dbbRandomMail,
     randomNav,
-    randomGender
+    randomGender,
+    randomEvent
 };
 
 module.exports = rakuten;

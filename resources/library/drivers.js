@@ -8,7 +8,7 @@ const chromedriver = async () => {
         let capabilities = config.capabilities[process.env.DRIVER];
         if(config.headless) {
             capabilities['goog:chromeOptions'].args.push("headless", "disable-gpu", "--no-sandbox", "window-size=1920,1080");
-        }
+        };
         const driver = await new Builder()
         .withCapabilities(capabilities)
         .usingServer(config.hostname)

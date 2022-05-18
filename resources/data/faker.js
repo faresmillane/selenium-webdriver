@@ -63,6 +63,13 @@ const randomNav = () => {
   return myArray[Math.floor(Math.random() * myArray.length)];
 };
 
+const randomEvent = () => {
+  const myArray = [
+    'club-r-everywhere',
+  ];
+  return myArray[Math.floor(Math.random() * myArray.length)];
+};
+
 const dbbRandomMail = (id) => {
   return `${id}@gmail.com`;
 };
@@ -76,7 +83,8 @@ const rakuten = {
     randomProduct,
     dbbRandomMail,
     randomNav,
-    randomGender
+    randomGender,
+    randomEvent
 };
 
 module.exports = rakuten;

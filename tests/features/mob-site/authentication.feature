@@ -36,8 +36,4 @@ Feature: Authentication
     And I click on the "creer_compte" button
     Then I access in the "account_page" screen
     And I see the "mon_compte" label
-
-# add fsat register
- 
- 
   

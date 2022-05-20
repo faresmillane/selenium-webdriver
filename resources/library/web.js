@@ -4,7 +4,7 @@ const shared = require ('../error');
 require('dotenv').config();
 let driver;
 
-async function getElement (element) {
+async function getElement2 (element) {
     try {
         let el, elm;
         for (let i = 0; i < element.length; i++) {
@@ -72,6 +72,44 @@ async function getElement (element) {
         shared.manageElementError(error)
     }
 }
+
+const getElement = async (element) => {
+    try {
+        let elm;
+        const timeout = 10000;
+        for (let i = 0; i < element.length; i++) {
+            if(element[i].includes("ID=")) {
+                elm = element[i].replace("ID=", "");
+                await driver.wait(until.elementLocated(By.id(elm)), timeout);
+                await wait(100);
+                return;
+            } else if(element[i].includes("SELECTOR=")) {
+                elm = element[i].replace("SELECTOR=", "");
+                await driver.wait(until.elementLocated(By.css(elm)), timeout);
+                await wait(100);
+                return;
+            } else if (element[i].includes("XPATH=")) {
+                elm = element[i].replace("XPATH=", "");
+                await driver.wait(until.elementLocated(By.xpath(elm)), timeout);
+                await wait(100);
+                return;
+            } else if (element[i].includes("CLASS=")) {
+                elm = element[i].replace("CLASS=", "");
+                await driver.wait(until.elementLocated(By.className(elm)), timeout);
+                await wait(100);
+                return;
+            } else if (element[i].includes("NAME=")) {
+                elm = element[i].replace("NAME=", "");
+                await driver.wait(until.elementLocated(By.name(elm)), timeout);
+                await wait(100);
+                return;
+            }
+        }
+    }
+    catch (error) {
+        await shared.manageError('waitToSeeElement error: ', error);
+    }
+};
 
 const initDriver = async () => {
     try {

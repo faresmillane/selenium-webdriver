@@ -76,3 +76,5 @@ Feature: Navigation
     And I see the "messages_page" label
     And I see the "messages_page_header" label
 
+# boutique https://www4.rakqa.fr/boutique/boulanger
+# inscription vendeur pro : https://www4.rakqa.fr/seller/sell-register-pro

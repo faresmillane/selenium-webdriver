@@ -6,6 +6,7 @@ module.exports = {
     ],
     login_page_header:[
         "CLASS=Hea1",
+        "ID=header",
     ],
     login_email:[
         "NAME=j_username",
@@ -37,10 +38,12 @@ module.exports = {
         "XPATH=//*[@id='userPassword']"
     ],
     mrs_gender:[
-        "XPATH=//*[@id='frm_subscription']/fieldset[1]/div[4]/div[1]/div/label/span/span[2]",
+        "CLASS=ui-icon ui-icon-radio-off ui-icon-shadow",
+        "LEVEL=0",
     ],
     mr_gender:[
-        "XPATH=//*[@id='frm_subscription']/fieldset[1]/div[4]/div[2]/div/label/span/span[2]",
+        "CLASS=ui-icon ui-icon-radio-off ui-icon-shadow",
+        "LEVEL=1",
     ],
     first_name:[
         "ID=userFirstName",

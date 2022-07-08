@@ -3,7 +3,7 @@ module.exports = {
     chrome: {
         isActive: true,
         maxSessions: 8,
-        version: '101.0.4951.41', // available versions : https://chromedriver.chromium.org/downloads
+        version: '103.0.5060.53', // available versions : https://chromedriver.chromium.org/downloads
         port: 4445
     },
     firefox: {

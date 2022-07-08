@@ -5,6 +5,10 @@ process.env.DRIVER == 'mobile' ? locators = require("./locators.mobile") : locat
 module.exports = {
     urls: {
         cart_page: '/cart',
+        cart_shipping: '/cartshipping',
+        cart_livraion: '/checkout?action=addressregister',
+        cart_checkout: '/checkout/payment/processout',
+        validated_payment: '/checkout?action=paymentsuccess&purchaseId='
     },
     locators
 }

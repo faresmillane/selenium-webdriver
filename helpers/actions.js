@@ -22,8 +22,26 @@ const web = require('../resources/library/web');
     await web.findElement(element);
   }
 
-  const clickWeb = async (element) => {
-    await web.click(element);
+  const clickWeb = async (action, element) => {
+    if (action == 'click') {
+      await web.click(element);
+    } else {
+      await web.clickBox(element);
+    }
+  }
+
+  const selectCheckbox = async (type, mode) => {
+    if (mode == 'livraison') {
+      await web.selectLivraisonMode(type);
+    } else {
+      await web.clickBox(element);
+    }
+  }
+
+  const fillCardInformation = async (element, value) => {
+    await web.switchToFrame(element);
+    await web.fillText(["XPATH=//input"], value)
+    await web.switchToFrame(null);
   }
 
   const quitDriverWeb = async () => {
@@ -38,10 +56,6 @@ const web = require('../resources/library/web');
     await web.maximizeWindow();
   }
 
-  const clickBox = async (element) => {
-    await web.clickBox(element);
-  }
-
   const wait = async (time) => {
     await web.wait(time);
   }
@@ -54,6 +68,15 @@ const web = require('../resources/library/web');
     await web.elementIsDisplayed(element);
   }
 
+  const switchTo = async (type, name) => {
+    if (type == 'window') {
+      const url = await web.switchToWindow(name);
+      return url;
+    } else if (type == 'frame') {
+      await web.switchToFrame(name);
+    }
+  }
+
   module.exports = {
     runSeleniumServer,
     init,
@@ -64,8 +87,10 @@ const web = require('../resources/library/web');
     quitDriverWeb,
     dismissAlert,
     maximizeWindow,
-    clickBox,
     wait,
     waitElement,
-    isDisplayed
+    isDisplayed,
+    switchTo,
+    selectCheckbox,
+    fillCardInformation
 };

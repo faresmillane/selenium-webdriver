@@ -12,6 +12,8 @@ const randomPin = (len) => {
 
 const randomMail = (id) => `rakuten.quality+${id}@gmail.com`;
 
+const iphoneProduct = () => '/submit?action=submitadvert&aid=5196265710&fromurl=%2Finventory%3Faction%3Dglobal%26nav%3DTel-PDA_Telephones-mobiles&nn=true&productid=4203109223';
+
 const randomBirthDate = () => {
   let start = new Date(1950, 0, 1);
   let end = new Date();
@@ -70,6 +72,27 @@ const randomEvent = () => {
   return myArray[Math.floor(Math.random() * myArray.length)];
 };
 
+const randomBoutique = () => {
+  const myArray = [
+    'boulanger',
+    'mmzci',
+  ];
+  return myArray[Math.floor(Math.random() * myArray.length)];
+};
+
+const randomPartner = () => {
+  const myArray = [
+    'ouigo',
+    'nike',
+    'monoprix',
+    'castorama',
+    'conforama',
+    'hm',
+    'hotelscomfrance'
+  ];
+  return myArray[Math.floor(Math.random() * myArray.length)];
+};
+
 const dbbRandomMail = (id) => {
   return `${id}@gmail.com`;
 };
@@ -84,7 +107,10 @@ const rakuten = {
     dbbRandomMail,
     randomNav,
     randomGender,
-    randomEvent
+    randomEvent,
+    randomBoutique,
+    randomPartner,
+    iphoneProduct
 };
 
 module.exports = rakuten;

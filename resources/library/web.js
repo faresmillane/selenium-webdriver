@@ -1,65 +1,119 @@
 const { By, until } = require('selenium-webdriver');
 const drivers = require("./drivers");
 const shared = require ('../error');
+const config = require("../../config");
 require('dotenv').config();
 let driver;
 
-async function getElement2 (element) {
+async function getElementByConsole (element) {
     try {
-        let el, elm;
+        let elm, isDisplayed;
+        for (let i = 0; i < element.length; i++) {
+          if(element[i].includes("ID=")) {
+              elm = element[i].replace("ID=", "");
+              isDisplayed = await driver.executeScript(`return document.getElementById('${elm}')`);
+              if (isDisplayed) { return isDisplayed } else { shared.manageElementWarning(`ID=${elm}`) }
+          } else if(element[i].includes("SELECTOR=")) {
+              elm = element[i].replace("SELECTOR=", "");
+              isDisplayed = await driver.executeScript(`return document.querySelector('${elm}');`);
+              if (isDisplayed) { return isDisplayed } else { shared.manageElementWarning(`SELECTOR=${elm}`) }
+          } else if (element[i].includes("XPATH=")) {
+              elm = element[i].replace("XPATH=", "");
+              isDisplayed = await driver.executeScript(`return document.evaluate("${elm}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;`);
+              if (isDisplayed) { return isDisplayed } else { shared.manageElementWarning(`XPATH=${elm}`) }
+          } else if (element[i].includes("CLASS=")) {
+              elm = element[i].replace("CLASS=", "");
+              isDisplayed = await driver.executeScript(`return document.getElementsByClassName('${elm}')[0]`);
+              if (isDisplayed) {
+                isDisplayed = await driver.findElement(By.className(elm)); 
+                return isDisplayed 
+                } else { shared.manageElementWarning(`CLASS=${elm}`) }
+          } else if (element[i].includes("NAME=")) {
+              elm = element[i].replace("NAME=", "");
+              isDisplayed = await driver.executeScript(`return document.getElementsByName('${elm}')`);
+              if (isDisplayed) {
+                isDisplayed = await driver.findElement(By.name(elm)); 
+                return isDisplayed 
+              } else { shared.manageElementWarning(`NAME=${elm}`) }
+          }
+      }
+    }
+    catch (error) {
+        shared.manageElementError(error)
+    }
+}
+
+async function getElement (element) {
+        const timeout = config.timeout;
+        let el, elm, isDisplayed, isError;
         for (let i = 0; i < element.length; i++) {
             try {
                 if(element[i].includes("ID=")) {
                     elm = element[i].replace("ID=", "");
+                    await driver.wait(until.elementLocated(By.id(elm)), timeout);
                     el = await driver.findElement(By.id(elm));
                     return el;
                 };
             }
             catch (error) {
+                isDisplayed = false;
+                isError = error;
                 shared.manageElementWarning(`ID=${elm}`);
             }
             finally {
                 try {
                     if(element[i].includes("SELECTOR=")) {
                         elm = element[i].replace("SELECTOR=", "");
+                        await driver.wait(until.elementLocated(By.css(elm)), timeout);
                         el = await driver.findElement(By.css(elm));
                         return el;
                     };
                 }
                 catch (error) {
+                    isDisplayed = false;
+                    isError = error;
                     shared.manageElementWarning(`SELECTOR=${elm}`);
                 }
                 finally {
                     try {
                         if(element[i].includes("XPATH=")) {
                             elm = element[i].replace("XPATH=", "");
+                            await driver.wait(until.elementLocated(By.xpath(elm)), timeout);
                             el = await driver.findElement(By.xpath(elm));
                             return el;
                         };
                     }
                     catch (error) {
+                        isDisplayed = false;
+                        isError = error;
                         shared.manageElementWarning(`XPATH=${elm}`);
                     }
                     finally {
                         try {
                             if(element[i].includes("NAME=")) {
                                 elm = element[i].replace("NAME=", "");
+                                await driver.wait(until.elementLocated(By.name(elm)), timeout);
                                 el = await driver.findElement(By.name(elm));
                                 return el;
                             };
                         }
                         catch (error) {
+                            isDisplayed = false;
+                            isError = error;
                             shared.manageElementWarning(`NAME=${elm}`);
                         }
                         finally {
                             try {
                                 if(element[i].includes("CLASS=")) {
                                     elm = element[i].replace("CLASS=", "");
+                                    await driver.wait(until.elementLocated(By.className(elm)), timeout);
                                     el = await driver.findElement(By.className(elm));
                                     return el;
                                 };
                             }
                             catch (error) {
+                                isDisplayed = false;
+                                isError = error;
                                 shared.manageElementWarning(`CLASS=${elm}`);
                             }
                         }
@@ -67,49 +121,10 @@ async function getElement2 (element) {
                 }
             }
         };
-    }
-    catch (error) {
-        shared.manageElementError(error)
-    }
-}
-
-const getElement = async (element) => {
-    try {
-        let elm;
-        const timeout = 10000;
-        for (let i = 0; i < element.length; i++) {
-            if(element[i].includes("ID=")) {
-                elm = element[i].replace("ID=", "");
-                await driver.wait(until.elementLocated(By.id(elm)), timeout);
-                await wait(100);
-                return;
-            } else if(element[i].includes("SELECTOR=")) {
-                elm = element[i].replace("SELECTOR=", "");
-                await driver.wait(until.elementLocated(By.css(elm)), timeout);
-                await wait(100);
-                return;
-            } else if (element[i].includes("XPATH=")) {
-                elm = element[i].replace("XPATH=", "");
-                await driver.wait(until.elementLocated(By.xpath(elm)), timeout);
-                await wait(100);
-                return;
-            } else if (element[i].includes("CLASS=")) {
-                elm = element[i].replace("CLASS=", "");
-                await driver.wait(until.elementLocated(By.className(elm)), timeout);
-                await wait(100);
-                return;
-            } else if (element[i].includes("NAME=")) {
-                elm = element[i].replace("NAME=", "");
-                await driver.wait(until.elementLocated(By.name(elm)), timeout);
-                await wait(100);
-                return;
-            }
+        if(isDisplayed == false) {
+            await shared.manageElementError(isError);
         }
     }
-    catch (error) {
-        await shared.manageError('waitToSeeElement error: ', error);
-    }
-};
 
 const initDriver = async () => {
     try {
@@ -128,7 +143,7 @@ const initDriver = async () => {
           }
     }
     catch (error) {
-        await shared.manageElementError('tapPerform', error);
+        await shared.manageElementError('init driver error', error);
     }
 };
 
@@ -138,7 +153,6 @@ const getUrl = async (url) => {
         
       }
     catch (error) {
-      await shared.manageElementError(url, error);
     }
 };
 
@@ -175,8 +189,7 @@ const findElement = async (element) => {
             return el;
         } else {
             shared.manageElementError(element);
-        }
-        
+        };
     }
     catch (error) {
         await shared.manageElementError(element, error);
@@ -187,6 +200,7 @@ const fillText = async (elm, element) => {
     try {
         const el = await getElement(elm);
         await driver.executeScript("arguments[0].scrollIntoView(true);", el)
+        await el.clear();
         await el.sendKeys(element);
         
     }
@@ -207,13 +221,42 @@ const click = async (element) => {
 };
 
 const clickBox = async (element) => {
-    try {
-        if(process.env.DRIVER == "mobile") {
-            await driver.executeScript(`document.getElementsByClassName("ui-icon ui-icon-radio-off ui-icon-shadow")[0].click()`);
-        } else {
-            await driver.executeScript(`document.getElementById("${element}").click()`);
+    let elm, level = 0, selector;
+    for (let i = 0; i < element.length; i++) {
+        if(element[i].includes("ID=")) {
+            elm = element[i].replace("ID=", "");
+            selector = 'id'
+        } else if(element[i].includes("CLASS=")) {
+            elm = element[i].replace("CLASS=", "");
+            selector = 'class'
+        } else if(element[i].includes("LEVEL=")) {
+            level = element[i].replace("LEVEL=", "");
         }
-        await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+    try {
+        if(selector == "class") {
+            await driver.executeScript(`document.getElementsByClassName("${elm}")[${level}].click()`);
+        } else {
+            await driver.executeScript(`document.getElementById("${elm}").click()`);
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    catch (error) {
+        await shared.manageElementError(element, error);
+    }
+};
+
+const selectLivraisonMode = async (type) => {
+    let selector;
+    process.env.DRIVER == 'mobile' ? selector = "ui-btn-text" : selector = "fld_lbl shipping_row ";
+    try {
+        const livraisons = await driver.executeScript(`return document.getElementsByClassName('${selector}')`);
+        for (let i = 0; i < livraisons.length; i++) {
+            let livraison = await driver.executeScript(`return document.getElementsByClassName('${selector}')[${i}]["innerText"]`);
+            if(livraison.includes(type)) {
+                await driver.executeScript(`document.getElementsByClassName('${selector}')[${i}].click()`);
+            };
+        };
     }
     catch (error) {
         await shared.manageElementError(element, error);
@@ -276,18 +319,13 @@ const takeScreenshot = async () => {
         return encodedString;
     }
     catch {
-        console.log("can not take screenshot")
     }
 }
 
 const dismissAlert = async () => {
     try {
-        //Click the link to activate the alert
         await driver.findElement(By.linkText('#batchsdk-ui-alert')).click();
-
-        // Wait for the alert to be displayed
         await driver.wait(until.alertIsPresent());
-
         let alert = await driver.switchTo().alert();
         await alert.dismiss();
     }
@@ -298,36 +336,8 @@ const dismissAlert = async () => {
 
 const waitToSeeElement = async (element) => {
     try {
-        let elm;
-        const timeout = 10000;
-        for (let i = 0; i < element.length; i++) {
-            if(element[i].includes("ID=")) {
-                elm = element[i].replace("ID=", "");
-                await driver.wait(until.elementLocated(By.id(elm)), timeout);
-                await wait(100);
-                return;
-            } else if(element[i].includes("SELECTOR=")) {
-                elm = element[i].replace("SELECTOR=", "");
-                await driver.wait(until.elementLocated(By.css(elm)), timeout);
-                await wait(100);
-                return;
-            } else if (element[i].includes("XPATH=")) {
-                elm = element[i].replace("XPATH=", "");
-                await driver.wait(until.elementLocated(By.xpath(elm)), timeout);
-                await wait(100);
-                return;
-            } else if (element[i].includes("CLASS=")) {
-                elm = element[i].replace("CLASS=", "");
-                await driver.wait(until.elementLocated(By.className(elm)), timeout);
-                await wait(100);
-                return;
-            } else if (element[i].includes("NAME=")) {
-                elm = element[i].replace("NAME=", "");
-                await driver.wait(until.elementLocated(By.name(elm)), timeout);
-                await wait(100);
-                return;
-            }
-        }
+        const el = await getElement(element);
+        if (el) { return }
     }
     catch (error) {
         await shared.manageError('waitToSeeElement error: ', error);
@@ -336,25 +346,50 @@ const waitToSeeElement = async (element) => {
 
 const elementIsDisplayed = async (element) => {
     try {
-        let elm;
-        for (let i = 0; i < element.length; i++) {
-            if(element[i].includes("ID=")) {
-                elm = element[i].replace("ID=", "");
-                await driver.findElement(By.id(elm)).isDisplayed();
-                return;
-            } else if(element[i].includes("SELECTOR=")) {
-                elm = element[i].replace("SELECTOR=", "");
-                await driver.findElement(By.css(elm)).isDisplayed();
-                return;
-            } else if (element[i].includes("XPATH=")) {
-                elm = element[i].replace("XPATH=", "");
-                await driver.findElement(By.xpath(elm)).isDisplayed();
-                return;
-            }
-        }
+        const el = await getElement(element);
+        await el.isDisplayed();
+        if (el) { return }
     }
     catch (error) {
         await shared.manageError('waitToSeeElement error: ', error);
+    }
+};
+
+const switchToWindow = async (url) => {
+    try {
+        let URL;
+        const originalWindow = await driver.getWindowHandle();
+        await driver.wait(
+            async () => (await driver.getAllWindowHandles()).length > 1,
+            config.timeout
+        );
+        const windows = await driver.getAllWindowHandles();
+        for (let i = 0; i < windows.length; i++) {
+            if (windows[i] !== originalWindow) {
+                await driver.switchTo().window(windows[i]);
+                URL = await driver.getCurrentUrl();
+                if(URL.includes(url)) {
+                    return;
+                };
+            };
+        };
+    }
+    catch (error) {
+        await shared.manageError('switchTo error: ', error);
+    }
+};
+
+const switchToFrame = async (element) => {
+    try {
+        if (element == null) {
+            await driver.switchTo().frame(null);
+        } else {
+            const el = await getElement(element);
+            await driver.switchTo().frame(el);
+        }
+    }
+    catch (error) {
+        await shared.manageError('switchTo error: ', error);
     }
 };
 
@@ -375,5 +410,8 @@ module.exports = {
     getCurrentUrl,
     popinsClose,
     takeScreenshot,
-    deleteAllCookies
+    deleteAllCookies,
+    switchToWindow,
+    switchToFrame,
+    selectLivraisonMode
 };

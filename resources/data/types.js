@@ -16,7 +16,8 @@ const Status = {
 const User = {
     UNKNOW: 'unknow',
     NEW: 'new',
-    REGISTERED: 'registered'
+    REGISTERED: 'registered',
+    SELLER: 'seller'
 };
 
 const Gender = {

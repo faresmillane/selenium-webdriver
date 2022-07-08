@@ -1,0 +1,159 @@
+pipeline {
+    agent {
+        label 'tools-qa'
+    }
+    environment {
+        BASE_URL = ""
+        WS_URL = ""
+        CHROME = ""
+        FIREFOX = ""
+        MOBILE = ""
+        API = ""
+        CONF = ""
+        TAGS = ""
+    }
+    options {
+        disableConcurrentBuilds()
+    }
+    parameters {
+        choice(name: 'RAKQA_ENV', choices: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'], description: 'on which environment ?')
+        choice(name: 'TEAM', choices: ['all', 'b2c', 'buyers', 'c2c', 'seo', 'visitors', 'tech'])
+        string(defaultValue: "", description: 'Run tests with a specific tag ? Exemple: Authentificate (optional)', name: 'TAG')
+    } 
+    stages {
+         stage("Preparation & install"){
+            steps{
+            script {
+                	wrap([$class: 'BuildUser']) {
+                    try {
+                        if ("${BUILD_USER_FIRST_NAME}"){
+                	        currentBuild.displayName = "Started by ${BUILD_USER_FIRST_NAME}"
+                        }
+                    } catch (Exception e) {
+                        currentBuild.displayName = "Started by timer"
+                    }
+                    }
+                    BASE_URL = "https://www${RAKQA_ENV}.rakqa.fr"
+                    WS_URL = "https://ws${RAKQA_ENV}.rakqa.fr"
+                    if ("${TEAM}" == 'all'){
+                        CONF = "**"
+                    } else {
+                        CONF = "${TEAM}"
+                    }
+                    if ("${TAG}"){
+                        TAGS = " and @${TAG}"
+                    } else {
+                        TAGS = " "
+                    }
+               }
+               echo "Preparation & install dependencies ..."
+               sh '''
+                    export PATH=/usr/local/bin:$PATH
+                    pwd
+                    node -v
+                    npm ci
+               '''
+               echo "Preparation & installation : Done"
+            }
+         }
+         stage("Run tests"){
+             steps {   
+                 script {
+                     try { 
+                        parallel(
+                            'Chrome': {
+                                echo "chrome tests started ..."
+                                sh "HEADLESS=true BASE_URL=${BASE_URL} DRIVER=chrome ./node_modules/.bin/cucumber-js tests/features/teams/${CONF}/*.feature --tags='@Desktop${TAGS}'"
+                                echo "chrome tests : Done"
+                            },
+                            'Firefox': {
+                                echo "firefox tests started ..."
+                                sh "HEADLESS=true BASE_URL=${BASE_URL} DRIVER=firefox ./node_modules/.bin/cucumber-js tests/features/teams/${CONF}/*.feature --tags='@Desktop${TAGS}'"
+                                echo "firefox tests : Done"
+                            },
+                            'Mobile': {
+                                echo "mobile tests started ..."
+                                sh "HEADLESS=true BASE_URL=${BASE_URL} DRIVER=mobile ./node_modules/.bin/cucumber-js tests/features/teams/${CONF}/*.feature --tags='@Mobile${TAGS}'"
+                                echo "mobile tests : Done"
+                            }
+                        )
+                    }
+                    catch (Exception e) {
+                        if(manager.logContains("tests failed")) {
+                            currentBuild.result = 'UNSTABLE'
+                            return
+                        } else {
+                            currentBuild.result = 'SUCCESS'
+                            return
+                        }
+                    }
+                }
+            }
+        }
+        stage("Status"){
+            steps{
+            script {
+                    sh'''
+                        DRIVER=chrome node resources/status.js
+                        DRIVER=firefox node resources/status.js
+                        DRIVER=mobile node resources/status.js
+                    '''
+                    if(manager.logContains("chrome tests failed")) {
+                        CHROME = 'FAILED'
+                    } else {
+                        CHROME = 'PASSED'
+                    }
+                    if(manager.logContains("firefox tests failed")) {
+                        FIREFOX = 'FAILED'
+                    } else {
+                        FIREFOX = 'PASSED'
+                    }
+                    if(manager.logContains("mobile tests failed")) {
+                        MOBILE = 'FAILED'
+                    } else {
+                        MOBILE = 'PASSED'
+                    }
+               }
+            }
+         }
+    } 
+    post {
+        always {
+            echo "generating report..."
+                archiveArtifacts artifacts: 'reports/warnings.json', fingerprint: true
+                cucumber buildStatus: 'UNSTABLE',
+                    reportTitle: 'firefox report',
+                    fileIncludePattern: 'reports/cucumber-report-firefox.json',
+                    trendsLimit: 10,
+                    classifications: [
+                        [
+                            'key': 'Browser',
+                            'value': 'Firefox'
+                        ]
+                    ]
+                cucumber buildStatus: 'UNSTABLE',
+                    reportTitle: 'chrome report',
+                    fileIncludePattern: 'reports/cucumber-report-chrome.json',
+                    trendsLimit: 10,
+                    classifications: [
+                        [
+                            'key': 'Browser',
+                            'value': 'Chrome'
+                        ]
+                    ]
+                cucumber buildStatus: 'UNSTABLE',
+                    reportTitle: 'mobile report',
+                    fileIncludePattern: 'reports/cucumber-report-mobile.json',
+                    trendsLimit: 10,
+                    classifications: [
+                        [
+                            'key': 'Browser',
+                            'value': 'Chrome mobile'
+                        ]
+                    ]
+                }
+            cleanup {
+                deleteDir()
+        }
+    }
+}

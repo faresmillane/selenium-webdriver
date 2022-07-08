@@ -6,6 +6,7 @@ const faker = require('../../../resources/data/faker');
 module.exports = {
     urls: {
         offer_page: `/offer?action=desc&aid=5196265710&productid=4203109223`,
+        offer_buy_page: '/offer/buy/4203109223'
     },
     locators
 }

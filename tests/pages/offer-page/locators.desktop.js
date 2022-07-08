@@ -22,4 +22,10 @@ module.exports = {
         "XPATH=//*[@data-qa='notif']",
         "CLASS=Notification-module_success_1Vf utils_flex_3F5 utils_icon_16x12_wlu utils_p_10_LZc utils_br_4_QF6 flex pa-8 br2 items-center"
     ],
+    mode_livraisons:[
+        "CLASS=v2_fpp_link v2_fpp_see_shipping_options"
+    ],
+    shipping_popin:[
+        'CLASS=choice_shipping_info'
+    ]
 }

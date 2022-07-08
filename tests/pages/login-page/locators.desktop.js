@@ -6,6 +6,7 @@ module.exports = {
     ],
     login_page_header:[
         "CLASS=Hea1",
+        "ID=header",
     ],
     login_email:[
         "ID=auth_user_identifier",
@@ -43,10 +44,10 @@ module.exports = {
         "XPATH=//*[@id='password']"
     ],
     mrs_gender:[
-        "radio_1",
+        "ID=radio_1",
     ],
     mr_gender:[
-        "radio_2",
+        "ID=radio_2",
     ],
     first_name:[
         "ID=first_name",
@@ -74,7 +75,7 @@ module.exports = {
         "XPATH=//*[@id='birth_year']"
     ],
     creer_compte:[
-        "submit_btn2"
+        "ID=submit_btn2"
     ],
     bad_credentials:[
         "ID=leadCol",

@@ -1,0 +1,32 @@
+module.exports = {
+    crew_page:[
+        "ID=crewPartnerModal",
+        "CLASS=style_scrollHeader_5pR style_fadeIn_AcJ",
+        "CLASS=listBlock_point_D6Z",
+        "XPATH=//*[@id='crewPartnerModal']/div/div/div/div[2]/div[1]/div[1]",
+    ],
+    se_connecter:[
+        "CLASS=style_whiteButton_4el",
+        "XPATH=//*[@id='crewPartnerModal']/div/div/div/div[2]/div[2]/div/div[1]/button"
+    ],
+    s_inscrire:[
+        "CLASS=style_redButton_+LW",
+        "XPATH=//*[@id='crewPartnerModal']/div/div/div/div[2]/div[2]/div/div[2]/button",
+    ],
+    close:[
+        "CLASS=style_closeIcon_eF8",
+        "XPATH=//*[@id='crewPartnerModal']/div/div/div/div[2]/a",
+    ],
+    activer_remboursement:[
+        "CLASS=style_redButton_+LW",
+        "XPATH=//*[@id='crewPartnerModal']/div/div/div/div[2]/div[2]/div/button",
+    ],
+    vous_avez_fait_votre_achat:[
+        "CLASS=style_crewPartnerSuccessModalTitle_e6l",
+        "XPATH=//*[@id='crewPartnerModal']/div/div/div/div[2]/div[1]/div/h1",
+    ],
+    une_question:[
+        "CLASS=style_whiteButton_4el",
+        "XPATH=//*[@id='crewPartnerModal']/div/div/div/div[2]/div[2]/div/div[1]/button",
+    ],
+}

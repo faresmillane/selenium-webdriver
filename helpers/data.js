@@ -22,11 +22,27 @@ const getUser = async (user) => {
           day_of_birth: faker.datatype.number({ min:1, max:30 }),
           month_of_birth: faker.datatype.number({ min:1, max:12 }),
           year_of_birth: faker.datatype.number({ min:1950, max:2004 }),
+          livraison_adress: '05 rue des champs',
+          livraison_code: 78260,
+          livraison_ville: 'BEJAIA',
+          livraison_phone_number: '0658230122',
+          card_number: "4242424242424242",
+          card_expiration_date: "1226",
+          card_secret: "123"
         }
       } else if (user == User.REGISTERED) {
         return {
           login_email: process.env.REGISTRED_USER,
-          login_password: process.env.REGISTRED_PASS
+          login_password: process.env.REGISTRED_PASS,
+          card_number: "4242424242424242",
+          card_expiration_date: "1226",
+          card_secret: "123"
+        }
+      } else if (user == User.SELLER) {
+        return {
+          login_email: 'Boulanger',
+          login_password: process.env.REGISTRED_PASS,
+          stock_number: '99999'
         }
       }
 }

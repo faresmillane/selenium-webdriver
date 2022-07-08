@@ -7,8 +7,11 @@ const search_page = require('./search-page');
 const nav_page = require('./nav-page');
 const offer_page = require('./offer-page');
 const event_page = require('./event-page');
-const sell_page = require('./sell-page');
+const pro_seller_page = require('./pro-seller-page');
+const part_seller_page = require('./part-seller-page');
 const messages_page = require('./messages-page');
+const boutique_page = require('./boutique-page');
+const crew_page = require('./crew-page');
 
 module.exports = {
     home_page,
@@ -20,6 +23,9 @@ module.exports = {
     nav_page,
     offer_page,
     event_page,
-    sell_page,
-    messages_page
+    pro_seller_page,
+    part_seller_page,
+    messages_page,
+    boutique_page,
+    crew_page
 };

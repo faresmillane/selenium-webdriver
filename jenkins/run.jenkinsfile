@@ -1,30 +1,49 @@
 pipeline {
-   agent {
-       label 'tools-qa'
+    agent {
+        label 'tools-qa'
     }
-   parameters {
-      string(defaultValue: "master", description: 'On which automation repository branch ?', name: 'BRANCH_NAME')
-      choice(name: 'RAKQA_ENV', choices: ['7', '1', '2', '3', '4', '5', '6', '8', '9', '10', '11'], description: 'on which environment ?')
-      choice(name: 'SEND_REPORT', choices: ['no', 'yes'])
-   } 
-   stages {
+    environment {
+        BASE_URL = ""
+        WS_URL = ""
+        CHROME = ""
+        FIREFOX = ""
+        MOBILE = ""
+        API = ""
+    }
+    options {
+        disableConcurrentBuilds()
+    }
+    parameters {
+        choice(name: 'RAKQA_ENV', choices: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', 'preview', 'production'], description: 'on which environment ?')
+        choice(name: 'SEND_NOTIF', choices: ['no', 'yes'])
+    } 
+    stages {
          stage("Preparation & install"){
             steps{
             script {
                 	wrap([$class: 'BuildUser']) {
-                	    if (currentBuild.getBuildCauses()[0].shortDescription.contains('timer') == true){
-                            currentBuild.displayName = "Started by jenkins timer on www${RAKQA_ENV}.rakqa.fr env"
-                        } else {
-                            currentBuild.displayName = "Started by ${BUILD_USER_FIRST_NAME} on www${RAKQA_ENV}.rakqa.fr env"
+                    try {
+                        if ("${BUILD_USER_FIRST_NAME}"){
+                	        currentBuild.displayName = "Started by ${BUILD_USER_FIRST_NAME}"
                         }
-                            currentBuild.description = "branch: ${BRANCH_NAME}."
+                    } catch (Exception e) {
+                        currentBuild.displayName = "Started by timer"
+                    }
+                    }
+                    if ("${RAKQA_ENV}" == 'preview'){
+                        BASE_URL = "https://preview.fr.shopping.rakuten.com"
+                        WS_URL = "https://ws4.rakqa.fr"
+                    } else if ("${RAKQA_ENV}" == 'production'){
+                        BASE_URL = "https://fr.shopping.rakuten.com"
+                        WS_URL = "https://ws4.rakqa.fr"
+                    } else {
+                        BASE_URL = "https://www${RAKQA_ENV}.rakqa.fr"
+                        WS_URL = "https://ws${RAKQA_ENV}.rakqa.fr"
                     }
                }
                echo "Preparation & install dependencies ..."
                sh '''
                     export PATH=/usr/local/bin:$PATH
-                    git clone https://github.com/faresmillane/selenium-webdriver.git -b ${BRANCH_NAME}
-                    cd selenium-webdriver
                     pwd
                     node -v
                     npm ci
@@ -39,53 +58,97 @@ pipeline {
                         parallel(
                             'Chrome': {
                                 echo "chrome tests started ..."
-                                sh'''
-                                    cd selenium-webdriver
-                                    HEADLESS=true BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=chrome npm run test:web
-                                '''
+                                if ("${RAKQA_ENV}" == 'preview' || "${RAKQA_ENV}" == 'production'){
+                                    sh "HEADLESS=true BASE_URL=${BASE_URL} DRIVER=chrome ./node_modules/.bin/cucumber-js tests/features/sanity/web-site/navigation.feature"
+                                } else {
+                                    sh "HEADLESS=true BASE_URL=${BASE_URL} DRIVER=chrome npm run test:web:sanity"
+                                }
                                 echo "chrome tests : Done"
                             },
                             'Firefox': {
                                 echo "firefox tests started ..."
-                                sh'''
-                                    cd selenium-webdriver
-                                    HEADLESS=true BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=firefox npm run test:web
-                                '''
+                                if ("${RAKQA_ENV}" == 'preview' || "${RAKQA_ENV}" == 'production'){
+                                    sh "HEADLESS=true BASE_URL=${BASE_URL} DRIVER=firefox ./node_modules/.bin/cucumber-js tests/features/sanity/web-site/navigation.feature"
+                                } else {
+                                    sh "HEADLESS=true BASE_URL=${BASE_URL} DRIVER=firefox npm run test:web:sanity"
+                                }
                                 echo "firefox tests : Done"
                             },
                             'Mobile': {
                                 echo "mobile tests started ..."
-                                sh'''
-                                    cd selenium-webdriver
-                                    HEADLESS=true BASE_URL=https://www${RAKQA_ENV}.rakqa.fr DRIVER=mobile npm run test:mob
-                                '''
+                                if ("${RAKQA_ENV}" == 'preview' || "${RAKQA_ENV}" == 'production'){
+                                    sh "HEADLESS=true BASE_URL=${BASE_URL} DRIVER=mobile ./node_modules/.bin/cucumber-js tests/features/sanity/mob-site/navigation.feature"
+                                } else {
+                                    sh "HEADLESS=true BASE_URL=${BASE_URL} DRIVER=mobile npm run test:mob:sanity"
+                                }
                                 echo "mobile tests : Done"
+                            },
+                            'Web-service': {
+                                echo "mobile tests started ..."
+                                if ("${RAKQA_ENV}" == 'preview' || "${RAKQA_ENV}" == 'production'){
+                                    sh "HEADLESS=true WS_URL=${WS_URL} DRIVER=api ./node_modules/.bin/cucumber-js tests/features/sanity/api/health.check.feature"
+                                } else {
+                                    sh "HEADLESS=true WS_URL=${WS_URL} DRIVER=api npm run test:api:sanity"
+                                }
+                                echo "web-service tests : Done"
                             }
                         )
-                        sh'''
-                        cd selenium-webdriver
-                        DRIVER=chrome node resources/status.js
-                        DRIVER=firefox node resources/status.js
-                        DRIVER=mobile node resources/status.js
-                        '''
                     }
                     catch (Exception e) {
                         if(manager.logContains("tests failed")) {
-                            currentBuild.result = 'FAILURE'
+                            currentBuild.result = 'UNSTABLE'
+                            return
                         } else {
                             currentBuild.result = 'SUCCESS'
+                            return
                         }
                     }
                 }
             }
         }
+        stage("Status"){
+            steps{
+            script {
+                    sh'''
+                        DRIVER=chrome node resources/status.js
+                        DRIVER=firefox node resources/status.js
+                        DRIVER=mobile node resources/status.js
+                        DRIVER=api node resources/status.js
+                    '''
+                    if(manager.logContains("chrome tests failed")) {
+                        CHROME = 'FAILED'
+                    } else {
+                        CHROME = 'PASSED'
+                    }
+                    if(manager.logContains("firefox tests failed")) {
+                        FIREFOX = 'FAILED'
+                    } else {
+                        FIREFOX = 'PASSED'
+                    }
+                    if(manager.logContains("mobile tests failed")) {
+                        MOBILE = 'FAILED'
+                    } else {
+                        MOBILE = 'PASSED'
+                    }
+                    if(manager.logContains("api tests failed")) {
+                        API = 'FAILED'
+                    } else {
+                        API = 'PASSED'
+                    }
+                    wrap([$class: 'BuildUser']) {
+                        currentBuild.description = "Chrome: ${CHROME} - Firefox: ${FIREFOX} <br> Mobile: ${MOBILE} - API: ${API}"  
+                    }
+               }
+            }
+         }
     } 
     post {
         always {
             echo "generating report..."
+                archiveArtifacts artifacts: 'reports/warnings.json', fingerprint: true
                 cucumber buildStatus: 'UNSTABLE',
                     reportTitle: 'firefox report',
-                    fileIncludePattern: 'selenium-webdriver/reports/cucumber-report-firefox.json',
+                    fileIncludePattern: 'reports/cucumber-report-firefox.json',
                     trendsLimit: 10,
                     classifications: [
                         [
@@ -95,7 +158,7 @@ pipeline {
                     ]
                 cucumber buildStatus: 'UNSTABLE',
                     reportTitle: 'chrome report',
-                    fileIncludePattern: 'selenium-webdriver/reports/cucumber-report-chrome.json',
+                    fileIncludePattern: 'reports/cucumber-report-chrome.json',
                     trendsLimit: 10,
                     classifications: [
                         [
@@ -105,12 +168,22 @@ pipeline {
                     ]
                 cucumber buildStatus: 'UNSTABLE',
                     reportTitle: 'mobile report',
-                    fileIncludePattern: 'selenium-webdriver/reports/cucumber-report-mobile.json',
+                    fileIncludePattern: 'reports/cucumber-report-mobile.json',
                     trendsLimit: 10,
                     classifications: [
                         [
                             'key': 'Browser',
                             'value': 'Chrome mobile'
+                        ]
+                    ]
+                cucumber buildStatus: 'UNSTABLE',
+                    reportTitle: 'web-service report',
+                    fileIncludePattern: 'reports/cucumber-report-api.json',
+                    trendsLimit: 10,
+                    classifications: [
+                        [
+                            'key': 'Mode',
+                            'value': 'REST API'
                         ]
                     ]
                 }

@@ -22,8 +22,9 @@ module.exports = {
     },
     headless: process.env.HEADLESS || false,
     features: "",
-    parallel: 5,
+    parallel: process.env.PARALLEL || 5,
     retry: 1,
+    timeout: 10000,
     htmlReport: false,
     jsonReport: true
 };

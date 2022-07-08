@@ -1,10 +1,11 @@
 require('dotenv').config();
 let locators;
 process.env.DRIVER == 'mobile' ? locators = require("./locators.mobile") : locators = require("./locators.desktop");
+const faker = require('../../../resources/data/faker');
 
 module.exports = {
     urls: {
-        sell_page: `/seller/sell-form`,
+        boutique_page: `/boutique/${faker.randomBoutique()}`,
     },
     locators
 }

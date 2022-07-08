@@ -3,19 +3,19 @@
   "version": "1.0.0",
   "scripts": {
     "selenium:server": "./node_modules/.bin/selenium",
-    "test:web": "./node_modules/.bin/cucumber-js tests/features/web-site/*.feature",
-    "test:mob": "./node_modules/.bin/cucumber-js tests/features/mob-site/*.feature",
-    "test:api": "./node_modules/.bin/cucumber-js tests/features/api/*.feature"
+    "test:web:sanity": "./node_modules/.bin/cucumber-js tests/features/sanity/web-site/*.feature",
+    "test:mob:sanity": "./node_modules/.bin/cucumber-js tests/features/sanity/mob-site/*.feature",
+    "test:api:sanity": "./node_modules/.bin/cucumber-js tests/features/sanity/api/*.feature"
   },
   "author": "FM",
   "license": "ISC",
   "dependencies": {
-    "@cucumber/cucumber": "^8.2.0",
+    "@cucumber/cucumber": "^8.4.0",
     "axios": "^0.26.1",
     "dotenv": "^16.0.0",
     "faker": "^5.5.3",
     "fs-extra": "^10.1.0",
-    "selenium-grid-manager": "^1.1.5",
-    "selenium-webdriver": "^4.1.1"
+    "selenium-grid-manager": "^1.1.6",
+    "selenium-webdriver": "^4.3.0"
   }
 }

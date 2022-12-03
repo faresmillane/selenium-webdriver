@@ -14,10 +14,15 @@ const Status = {
 };
 
 const User = {
-    UNKNOW: 'unknow',
-    NEW: 'new',
-    REGISTERED: 'registered',
-    SELLER: 'seller'
+    unknow: 'unknow',
+    new: 'new',
+    registered: 'registered',
+    otp: 'otp',
+    oney4x: 'oney4x',
+    oney4x: 'oney8x',
+    oney4x: 'oney12x',
+    paypal: 'paypal',
+    card: 'card'
 };
 
 const Gender = {

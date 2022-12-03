@@ -12,8 +12,6 @@ const randomPin = (len) => {
 
 const randomMail = (id) => `rakuten.quality+${id}@gmail.com`;
 
-const iphoneProduct = () => '/submit?action=submitadvert&aid=5196265710&fromurl=%2Finventory%3Faction%3Dglobal%26nav%3DTel-PDA_Telephones-mobiles&nn=true&productid=4203109223';
-
 const randomBirthDate = () => {
   let start = new Date(1950, 0, 1);
   let end = new Date();
@@ -31,7 +29,7 @@ const randomPassword = () => `${faker.lorem.word()}.@A${faker.datatype.number()}
 const randomId = () => faker.datatype.uuid();
 
 const randomGender = () => {
-  const myArray = ['mr_gender', 'mrs_gender'];
+  const myArray = ['_mr_gender', '_mrs_gender'];
   return myArray[Math.floor(Math.random() * myArray.length)];
 };
 
@@ -74,10 +72,14 @@ const randomEvent = () => {
 
 const randomBoutique = () => {
   const myArray = [
-    'boulanger',
-    'mmzci',
+//    'boulanger',
+    'AGAN_FR',
   ];
   return myArray[Math.floor(Math.random() * myArray.length)];
+};
+
+const dbbRandomMail = (id) => {
+  return `${id}@gmail.com`;
 };
 
 const randomPartner = () => {
@@ -93,8 +95,11 @@ const randomPartner = () => {
   return myArray[Math.floor(Math.random() * myArray.length)];
 };
 
-const dbbRandomMail = (id) => {
-  return `${id}@gmail.com`;
+const registredUser = () => {
+  return {
+    email: "rakuten.quality@gmail.com",
+    password: "Rakuten2020"
+  };
 };
 
 const rakuten = {
@@ -110,7 +115,7 @@ const rakuten = {
     randomEvent,
     randomBoutique,
     randomPartner,
-    iphoneProduct
+    registredUser
 };
 
 module.exports = rakuten;

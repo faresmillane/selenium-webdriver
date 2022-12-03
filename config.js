@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 module.exports = {
-    hostname: "http://localhost:4444/",
+    hostname: `http://localhost:${process.env.PORT || 4444}/`,
     capabilities: {
         chrome: {
             browserName: "chrome",
@@ -11,6 +11,11 @@ module.exports = {
         },
         firefox: {
              browserName: "firefox",
+             acceptSslCerts: true, 
+             acceptInsecureCerts: true
+        },
+        edge: {
+            browserName: "MicrosoftEdge",
         },
         mobile: {
             browserName: 'chrome',
@@ -22,7 +27,7 @@ module.exports = {
     },
     headless: process.env.HEADLESS || false,
     features: "",
-    parallel: process.env.PARALLEL || 5,
+    parallel: 4,
     retry: 1,
     timeout: 10000,
     htmlReport: false,

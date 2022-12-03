@@ -2,4 +2,4 @@ node_modules
 reports/cucumber-report*.html
 reports/cucumber-report*.json
 reports/warnings.json
-.vscode/
+.idea/

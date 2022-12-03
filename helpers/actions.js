@@ -11,11 +11,16 @@ const web = require('../resources/library/web');
   const navigate = async (url) => {
     await web.getUrl(url);
     await web.wait();
-    await web.maximizeWindow();
+//    await web.maximizeWindow();
   }
 
   const fillTextWeb = async (element, text) => {
     await web.fillText(element, text);
+  }
+
+  const getTextWeb = async (element) => {
+    const text = await web.getText(element);
+    return text;
   }
 
   const findElementWeb = async (element) => {
@@ -25,23 +30,11 @@ const web = require('../resources/library/web');
   const clickWeb = async (action, element) => {
     if (action == 'click') {
       await web.click(element);
-    } else {
+    } else if (action == 'force_click'){
       await web.clickBox(element);
-    }
-  }
-
-  const selectCheckbox = async (type, mode) => {
-    if (mode == 'livraison') {
-      await web.selectLivraisonMode(type);
     } else {
-      await web.clickBox(element);
+      await web.clickEnter(element);
     }
-  }
-
-  const fillCardInformation = async (element, value) => {
-    await web.switchToFrame(element);
-    await web.fillText(["XPATH=//input"], value)
-    await web.switchToFrame(null);
   }
 
   const quitDriverWeb = async () => {
@@ -54,6 +47,10 @@ const web = require('../resources/library/web');
 
   const maximizeWindow = async () => {
     await web.maximizeWindow();
+  }
+
+  const clickBox = async (element) => {
+    await web.clickBox(element);
   }
 
   const wait = async (time) => {
@@ -77,6 +74,12 @@ const web = require('../resources/library/web');
     }
   }
 
+  const fillCardInformation = async (element, value) => {
+    await web.switchToFrame(element);
+    await web.fillText(["XPATH=//input"], value)
+    await web.switchToFrame('null');
+  }
+
   module.exports = {
     runSeleniumServer,
     init,
@@ -87,10 +90,11 @@ const web = require('../resources/library/web');
     quitDriverWeb,
     dismissAlert,
     maximizeWindow,
+    clickBox,
     wait,
     waitElement,
     isDisplayed,
     switchTo,
-    selectCheckbox,
-    fillCardInformation
+    fillCardInformation,
+    getTextWeb
 };

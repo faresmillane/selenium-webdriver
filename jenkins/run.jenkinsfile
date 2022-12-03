@@ -9,13 +9,17 @@ pipeline {
         FIREFOX = ""
         MOBILE = ""
         API = ""
+        PORT = ""
+        TAGS = ""
+        URL_WEBHOOK_PROD = "https://officerakuten.webhook.office.com/webhookb2/5573f291-5c62-423c-930d-35001c614dc4@53a8b0d9-d900-48cc-9d7e-5935dc8d5b17/JenkinsCI/55306954ea2144b1a17c64ba85bae278/c89bdd63-bfe9-4adf-aa36-d9cac5e959f4"
     }
     options {
         disableConcurrentBuilds()
     }
     parameters {
-        choice(name: 'RAKQA_ENV', choices: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', 'preview', 'production'], description: 'on which environment ?')
-        choice(name: 'SEND_NOTIF', choices: ['no', 'yes'])
+        choice(name: 'RAKQA_ENV', choices: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', 'preview', 'production'], description: 'on which environment ?')
+        string(defaultValue: "Sanity", description: 'run tests with a specific tag ? example: \"GoodAuthenticate\" (optional) or \"All\" to run all tests', name: 'TAG')
+        string(defaultValue: "4.6.0-20221104", description: 'you can specify the version of selenium docker image to use, this image includes browsers and drivers versions, see : https://github.com/SeleniumHQ/docker-selenium/releases', name: 'SELENIUM_SERVER_VERSION')
     } 
     stages {
          stage("Preparation & install"){
@@ -33,18 +37,32 @@ pipeline {
                     if ("${RAKQA_ENV}" == 'preview'){
                         BASE_URL = "https://preview.fr.shopping.rakuten.com"
                         WS_URL = "https://ws4.rakqa.fr"
+                        PORT = "501"
+                        TAGS = "Prod"
                     } else if ("${RAKQA_ENV}" == 'production'){
                         BASE_URL = "https://fr.shopping.rakuten.com"
                         WS_URL = "https://ws4.rakqa.fr"
+                        PORT = "500"
+                        TAGS = "Prod"
                     } else {
                         BASE_URL = "https://www${RAKQA_ENV}.rakqa.fr"
                         WS_URL = "https://ws${RAKQA_ENV}.rakqa.fr"
+                        TAGS = "${TAG}"
+                        if("${RAKQA_ENV}" == "10" || "${RAKQA_ENV}" == "11" || "${RAKQA_ENV}" == "12"){
+                            PORT = "4${RAKQA_ENV}"
+                        } else {
+                            PORT = "45${RAKQA_ENV}"
+                        }
                     }
                }
                echo "Preparation & install dependencies ..."
+               sh "docker run -d -e SE_NODE_MAX_SESSIONS=4 -p ${PORT}0:4444 --shm-size=\"2g\" --name chrome-${RAKQA_ENV} selenium/standalone-chrome:${SELENIUM_SERVER_VERSION}"
+               sh "docker run -d -e SE_NODE_MAX_SESSIONS=4 -p ${PORT}1:4444 --shm-size=\"2g\" --name mobile-${RAKQA_ENV} selenium/standalone-chrome:${SELENIUM_SERVER_VERSION}"
+               sh "docker run -d -e SE_NODE_MAX_SESSIONS=4 -p ${PORT}2:4444 --shm-size=\"2g\" --name firefox-${RAKQA_ENV} selenium/standalone-firefox:${SELENIUM_SERVER_VERSION}"
+               sh "docker run -d -e SE_NODE_MAX_SESSIONS=4 -p ${PORT}3:4444 --shm-size=\"2g\" --name edge-${RAKQA_ENV} selenium/standalone-edge:${SELENIUM_SERVER_VERSION}"
                sh '''
                     export PATH=/usr/local/bin:$PATH
-                    pwd
+                    mkdir reports
                     node -v
                     npm ci
                '''
@@ -58,37 +76,46 @@ pipeline {
                         parallel(
                             'Chrome': {
                                 echo "chrome tests started ..."
-                                if ("${RAKQA_ENV}" == 'preview' || "${RAKQA_ENV}" == 'production'){
-                                    sh "HEADLESS=true BASE_URL=${BASE_URL} DRIVER=chrome ./node_modules/.bin/cucumber-js tests/features/sanity/web-site/navigation.feature"
+                                if ("${TAG}" == 'All'){
+                                    sh "PORT=${PORT}0 HEADLESS=true BASE_URL=${BASE_URL} DRIVER=chrome ./node_modules/.bin/cucumber-js tests/features/web-site/*.feature"
                                 } else {
-                                    sh "HEADLESS=true BASE_URL=${BASE_URL} DRIVER=chrome npm run test:web:sanity"
+                                    sh "PORT=${PORT}0 HEADLESS=true BASE_URL=${BASE_URL} DRIVER=chrome ./node_modules/.bin/cucumber-js tests/features/web-site/*.feature --tags=\"@${TAGS}\""
                                 }
                                 echo "chrome tests : Done"
                             },
                             'Firefox': {
                                 echo "firefox tests started ..."
-                                if ("${RAKQA_ENV}" == 'preview' || "${RAKQA_ENV}" == 'production'){
-                                    sh "HEADLESS=true BASE_URL=${BASE_URL} DRIVER=firefox ./node_modules/.bin/cucumber-js tests/features/sanity/web-site/navigation.feature"
+                                if ("${TAG}" == 'All'){
+                                    sh "PORT=${PORT}2 HEADLESS=true BASE_URL=${BASE_URL} DRIVER=firefox ./node_modules/.bin/cucumber-js tests/features/web-site/*.feature"
                                 } else {
-                                    sh "HEADLESS=true BASE_URL=${BASE_URL} DRIVER=firefox npm run test:web:sanity"
+                                    sh "PORT=${PORT}2 HEADLESS=true BASE_URL=${BASE_URL} DRIVER=firefox ./node_modules/.bin/cucumber-js tests/features/web-site/*.feature --tags=\"@${TAGS}\""
+                                }
+                                echo "firefox tests : Done"
+                            },
+                            'Edge': {
+                                echo "edge tests started ..."
+                                if ("${TAG}" == 'All'){
+                                    sh "PORT=${PORT}3 HEADLESS=true BASE_URL=${BASE_URL} DRIVER=edge ./node_modules/.bin/cucumber-js tests/features/web-site/*.feature"
+                                } else {
+                                    sh "PORT=${PORT}3 HEADLESS=true BASE_URL=${BASE_URL} DRIVER=edge ./node_modules/.bin/cucumber-js tests/features/web-site/*.feature --tags=\"@${TAGS}\""
                                 }
                                 echo "firefox tests : Done"
                             },
                             'Mobile': {
                                 echo "mobile tests started ..."
-                                if ("${RAKQA_ENV}" == 'preview' || "${RAKQA_ENV}" == 'production'){
-                                    sh "HEADLESS=true BASE_URL=${BASE_URL} DRIVER=mobile ./node_modules/.bin/cucumber-js tests/features/sanity/mob-site/navigation.feature"
+                                if ("${TAG}" == 'All'){
+                                    sh "PORT=${PORT}1 HEADLESS=true BASE_URL=${BASE_URL} DRIVER=mobile ./node_modules/.bin/cucumber-js tests/features/mob-site/*.feature"
                                 } else {
-                                    sh "HEADLESS=true BASE_URL=${BASE_URL} DRIVER=mobile npm run test:mob:sanity"
+                                    sh "PORT=${PORT}1 HEADLESS=true BASE_URL=${BASE_URL} DRIVER=mobile ./node_modules/.bin/cucumber-js tests/features/mob-site/*.feature --tags=\"@${TAGS}\""
                                 }
                                 echo "mobile tests : Done"
                             },
                             'Web-service': {
                                 echo "mobile tests started ..."
                                 if ("${RAKQA_ENV}" == 'preview' || "${RAKQA_ENV}" == 'production'){
-                                    sh "HEADLESS=true WS_URL=${WS_URL} DRIVER=api ./node_modules/.bin/cucumber-js tests/features/sanity/api/health.check.feature"
+                                    sh "HEADLESS=true WS_URL=${WS_URL} DRIVER=api npm run test:api"
                                 } else {
-                                    sh "HEADLESS=true WS_URL=${WS_URL} DRIVER=api npm run test:api:sanity"
+                                    sh "HEADLESS=true WS_URL=${WS_URL} DRIVER=api npm run test:api"
                                 }
                                 echo "web-service tests : Done"
                             }
@@ -138,12 +165,30 @@ pipeline {
                     wrap([$class: 'BuildUser']) {
                         currentBuild.description = "Chrome: ${CHROME} - Firefox: ${FIREFOX} <br> Mobile: ${MOBILE} - API: ${API}"  
                     }
+                    if("${RAKQA_ENV}" == "production" || "${RAKQA_ENV}" == "preview") {
+                        echo "send message"
+                        if("${CHROME}"=="FAILED" || "${MOBILE}"=="FAILED") {
+                        office365ConnectorSend webhookUrl: "${URL_WEBHOOK_PROD}",
+                        message: "Chrome: ${CHROME} - Firefox: ${FIREFOX} - Mobile: ${MOBILE} <br> <br> Report: ${env.BUILD_URL}",
+                        color: '#FF0000'
+                        }
+                    }
                }
             }
          }
     } 
     post {
         always {
+            script {
+                    sh "docker stop chrome-${RAKQA_ENV}"
+                    sh "docker stop firefox-${RAKQA_ENV}"
+                    sh "docker stop edge-${RAKQA_ENV}"
+                    sh "docker stop mobile-${RAKQA_ENV}"
+                    sh "docker rm chrome-${RAKQA_ENV}"
+                    sh "docker rm firefox-${RAKQA_ENV}"
+                    sh "docker rm edge-${RAKQA_ENV}"
+                    sh "docker rm mobile-${RAKQA_ENV}"
+                }
             echo "generating report..."
                 archiveArtifacts artifacts: 'reports/warnings.json', fingerprint: true
                 cucumber buildStatus: 'UNSTABLE',
@@ -164,6 +209,16 @@ pipeline {
                         [
                             'key': 'Browser',
                             'value': 'Chrome'
+                        ]
+                    ]
+                cucumber buildStatus: 'UNSTABLE',
+                    reportTitle: 'edge report',
+                    fileIncludePattern: 'reports/cucumber-report-edge.json',
+                    trendsLimit: 10,
+                    classifications: [
+                        [
+                            'key': 'Browser',
+                            'value': 'Edge'
                         ]
                     ]
                 cucumber buildStatus: 'UNSTABLE',

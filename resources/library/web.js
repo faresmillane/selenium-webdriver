@@ -1,4 +1,4 @@
-const { By, until } = require('selenium-webdriver');
+const { By, until, Keys } = require('selenium-webdriver');
 const drivers = require("./drivers");
 const shared = require ('../error');
 const config = require("../../config");
@@ -41,7 +41,7 @@ async function getElementByConsole (element) {
     catch (error) {
         shared.manageElementError(error)
     }
-}
+};
 
 async function getElement (element) {
         const timeout = config.timeout;
@@ -124,33 +124,35 @@ async function getElement (element) {
         if(isDisplayed == false) {
             await shared.manageElementError(isError);
         }
-    }
+};
 
 const initDriver = async () => {
     try {
         switch (process.env.DRIVER) {
             case 'chrome':
-              driver = await drivers.chromedriver('desk');
-              break;
+                driver = await drivers.chromedriver('desk');
+                break;
             case 'firefox':
-              driver = await drivers.geckodriver();
-              break;
+                driver = await drivers.geckodriver();
+                break;
+            case 'edge':
+                driver = await drivers.edgedriver();
+                break;
             case 'mobile':
-              driver = await drivers.chromedriver('mob');
-              break;
+                driver = await drivers.chromedriver('mob');
+                break;
             default:
               console.log(`Sorry, we are not configuration for ${process.env.DRIVER}.`);
           }
     }
     catch (error) {
-        await shared.manageElementError('init driver error', error);
+        console.log(error);
     }
 };
 
 const getUrl = async (url) => {
     try {
         await driver.get(url);
-        
       }
     catch (error) {
     }
@@ -158,14 +160,15 @@ const getUrl = async (url) => {
 
 const getCurrentUrl = async (expectedUrl) => {
     try {
-        let currentUrl;
+        let currentUrl, start = Date.now();
         do {
+            let delta = Date.now() - start;
             currentUrl = await driver.getCurrentUrl();
             await wait(100);
-            if (currentUrl = expectedUrl) {
+            if (currentUrl.includes(expectedUrl) || delta >= config.timeout) {
                 return currentUrl;
             }
-        } while (await driver.getCurrentUrl() != expectedUrl);
+        } while (currentUrl != expectedUrl && currentUrl !== undefined);
     }
     catch (error) {
       await shared.manageElementError(error);
@@ -200,12 +203,23 @@ const fillText = async (elm, element) => {
     try {
         const el = await getElement(elm);
         await driver.executeScript("arguments[0].scrollIntoView(true);", el)
-        await el.clear();
         await el.sendKeys(element);
         
     }
     catch (error) {
-        await shared.manageElementError(element, error);
+        await shared.manageElementError(elm, error);
+    }
+};
+
+const getText = async (elm) => {
+    try {
+        const el = await getElement(elm);
+        await driver.executeScript("arguments[0].scrollIntoView(true);", el)
+        const text = await el.getText();
+        return text;
+    }
+    catch (error) {
+        await shared.manageElementError(elm, error);
     }
 };
 
@@ -246,17 +260,11 @@ const clickBox = async (element) => {
     }
 };
 
-const selectLivraisonMode = async (type) => {
-    let selector;
-    process.env.DRIVER == 'mobile' ? selector = "ui-btn-text" : selector = "fld_lbl shipping_row ";
+const clickEnter = async (element) => {
     try {
-        const livraisons = await driver.executeScript(`return document.getElementsByClassName('${selector}')`);
-        for (let i = 0; i < livraisons.length; i++) {
-            let livraison = await driver.executeScript(`return document.getElementsByClassName('${selector}')[${i}]["innerText"]`);
-            if(livraison.includes(type)) {
-                await driver.executeScript(`document.getElementsByClassName('${selector}')[${i}].click()`);
-            };
-        };
+        let el = await getElement(element);
+        await driver.executeScript("arguments[0].scrollIntoView(true);", el)
+        await el.sendKeys(Keys.ENTER);
     }
     catch (error) {
         await shared.manageElementError(element, error);
@@ -289,6 +297,7 @@ const popinsClose = async () => {
         await driver.executeScript("var elm = document.getElementsByClassName('kml-modale')[0]; if (elm) elm.style.display='none';");
         await driver.executeScript("var elm = document.getElementsByClassName('didomi_accept_button')[0]; if (elm) elm.click();");
         await driver.executeScript("var elm = document.getElementsByClassName('didomi_accept_button btnStyle acceptAndCloseBtnStyle')[0]; if (elm) elm.click();");
+        await driver.executeScript("var elm = document.getElementsByClassName('close')[0]; if (elm) elm.click();");
     }
     catch (error) {
     }
@@ -320,7 +329,7 @@ const takeScreenshot = async () => {
     }
     catch {
     }
-}
+};
 
 const dismissAlert = async () => {
     try {
@@ -381,7 +390,7 @@ const switchToWindow = async (url) => {
 
 const switchToFrame = async (element) => {
     try {
-        if (element == null) {
+        if (element == 'null') {
             await driver.switchTo().frame(null);
         } else {
             const el = await getElement(element);
@@ -390,6 +399,20 @@ const switchToFrame = async (element) => {
     }
     catch (error) {
         await shared.manageError('switchTo error: ', error);
+    }
+};
+
+const getServerName = async () => {
+    try {
+        const head = await driver.executeScript(`return document.head.innerHTML`);
+        const regex = /(?<=<!--# Host:)(.*)(?=#-->)/s;
+        const server = head.match(regex);
+        if(server) {
+            return server[0];
+        }
+    }
+    catch (error) {
+        await shared.manageError('getServerName error: ', error);
     }
 };
 
@@ -411,7 +434,9 @@ module.exports = {
     popinsClose,
     takeScreenshot,
     deleteAllCookies,
-    switchToWindow,
     switchToFrame,
-    selectLivraisonMode
+    switchToWindow,
+    getServerName,
+    clickEnter,
+    getText
 };

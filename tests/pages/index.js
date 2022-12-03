@@ -1,31 +1,41 @@
-const home_page = require('./home-page');
-const login_page = require('./login-page');
-const account_page = require('./account-page');
-const fast_register_page = require('./fast-register-page');
-const cart_page = require('./cart-page');
-const search_page = require('./search-page');
-const nav_page = require('./nav-page');
-const offer_page = require('./offer-page');
-const event_page = require('./event-page');
-const pro_seller_page = require('./pro-seller-page');
-const part_seller_page = require('./part-seller-page');
-const messages_page = require('./messages-page');
-const boutique_page = require('./boutique-page');
-const crew_page = require('./crew-page');
+const _home = require('./_home');
+const _login = require('./_login');
+const _account = require('./_account');
+const _fast_register = require('./_fast_register');
+const _club_rakuten = require('./_club_rakuten');
+const _cart = require('./_cart');
+const _shipping = require('./_shipping');
+const _adresse = require('./_adresse');
+const _payment = require('./_payment');
+const _search = require('./_search');
+const _nav = require('./_nav');
+const _offer = require('./_offer');
+const _event = require('./_event');
+const _pro_seller = require('./_pro_seller');
+const _part_seller = require('./_part_seller');
+const _messages = require('./_messages');
+const _boutique = require('./_boutique');
+const _crew = require('./_crew');
+const _otp = require('./_otp');
 
 module.exports = {
-    home_page,
-    login_page,
-    account_page,
-    fast_register_page,
-    cart_page,
-    search_page,
-    nav_page,
-    offer_page,
-    event_page,
-    pro_seller_page,
-    part_seller_page,
-    messages_page,
-    boutique_page,
-    crew_page
+    _home,
+    _login,
+    _account,
+    _fast_register,
+    _club_rakuten,
+    _cart,
+    _search,
+    _nav,
+    _offer,
+    _event,
+    _pro_seller,
+    _part_seller,
+    _messages,
+    _boutique,
+    _crew,
+    _otp,
+    _shipping,
+    _adresse,
+    _payment
 };

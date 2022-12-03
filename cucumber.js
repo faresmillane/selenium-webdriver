@@ -3,7 +3,7 @@ require('dotenv').config();
 const fs = require('fs-extra');
 let htmlReport, jsonReport, steps;
 
-process.env.DRIVER === 'api' ? steps = 'tests/steps/rest.steps.js' : steps = 'tests/steps/actions.steps.js';
+process.env.DRIVER === 'api' ? steps = 'resources/steps/rest.steps.js' : steps = 'resources/steps/actions.steps.js';
 if(!fs.existsSync(`reports`)) { fs.mkdirSync(`reports`) };
 fs.writeFile('./reports/warnings.json', '[]');
 config.htmlReport ? htmlReport = `--format html:reports/cucumber-report-${process.env.DRIVER}.html ` : htmlReport = '';

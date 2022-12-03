@@ -1,0 +1,32 @@
+module.exports = {
+    _body:[
+        "ID=crewPartnerModal",
+        "CLASS=style_showContainer_kSC",
+        "CLASS=style_container_frs",
+        "XPATH=//*[@id='crewPartnerModal']/div/div/div/div[2]/div[1]/div[4]",
+    ],
+    _se_connecter:[
+        "CLASS=style_whiteButton_4el",
+        "XPATH=//*[@id='crewPartnerModal']/div/div/div/div[2]/div[2]/div/div[1]/button"
+    ],
+    _s_inscrire:[
+        "CLASS=style_redButton_+LW",
+        "XPATH=//*[@id='crewPartnerModal']/div/div/div/div[2]/div[2]/div/div[2]/button",
+    ],
+    _close:[
+        "CLASS=style_closeIcon_eF8",
+        "XPATH=//*[@id='crewPartnerModal']/div/div/div/div[2]/a",
+    ],
+    _activer_remboursement:[
+        "CLASS=style_redButton_+LW",
+        "XPATH=//*[@id='crewPartnerModal']/div/div/div/div[2]/div[2]/div/button",
+    ],
+    _vous_avez_fait_votre_achat:[
+        "CLASS=style_crewPartnerSuccessModalTitle_e6l",
+        "XPATH=//*[@id='crewPartnerModal']/div/div/div/div[2]/div[1]/div/h1",
+    ],
+    _une_question:[
+        "CLASS=style_whiteButton_4el",
+        "XPATH=//*[@id='crewPartnerModal']/div/div/div/div[2]/div[2]/div/div[1]/button",
+    ],
+}

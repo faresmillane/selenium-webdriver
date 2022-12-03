@@ -14,7 +14,7 @@ const manageElementWarning = async (element) => {
     warnings = JSON.parse(file);
     warnings.push(element);
     warnings = [...new Set(warnings)];
-    await fs.writeFile('./reports/warnings.json', JSON.stringify(warnings, null, 4));
+    await fs.writeFile('./reports/warnings.json', JSON.stringify(warnings, '', 4));
 };
 
 module.exports = {

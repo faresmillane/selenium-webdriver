@@ -1,5 +1,5 @@
 const api = require('../resources/library/api');
-const config = require(`../tests/api`);
+const config = require(`../resources/data/api`);
 let ws;
 
   const init = async (api) => {

@@ -1,22 +1,33 @@
 pipeline {
-   agent {
+    agent {
        label 'tools-qa'
     }
-   parameters {
-      choice(name: 'RAKQA_ENV', choices: ['7', '1', '2', '3', '4', '5', '6', '8', '9', '10', '11'], description: 'on which environment ?')
-   } 
-   stages {
+    options {
+        disableConcurrentBuilds()
+    }
+    parameters {
+            choice(name: 'RAKQA_ENV', choices: ['env01_fra1', 'env02_fra1', 'env03_fra1', 'env04_fra1', 'env05_fra1', 'env06_fra1', 'env07_fra1', 'env08_fra1', 'env09_fra1', 'env10_fra1', 'env11_fra1', 'env12_fra1', 'preview', 'production'], description: 'on which environment ?')
+            string(defaultValue: "Sanity", description: 'run tests with a specific tag ? example: \"GoodAuthenticate\" (optional) or \"All\" to run all tests', name: 'TAG')
+            string(defaultValue: "4.6.0-20221104", description: 'you can specify the version of selenium docker image to use, this image includes browsers and drivers versions, see : https://github.com/SeleniumHQ/docker-selenium/releases', name: 'SELENIUM_SERVER_VERSION')
+    } 
+    stages {
          stage("run tests"){
              steps{
                  script{
-                    sh '''
-                        number=$(printf "%02d" ${RAKQA_ENV})
-                        echo $var
-                    '''
-                    number=sh(script: "printf '%02d' ${RAKQA_ENV}", returnStdout: true).trim();
-                    build job: "ENV ${number}", wait: true, parameters: [string(name: 'BRANCH_NAME', value: 'master')]
-                 }
-             }
-         }
+                    if ("${RAKQA_ENV}" == 'preview'){
+                        build job: "PREVIEW", wait: true, parameters: [string(name: "RAKQA_ENV", value: "${RAKQA_ENV}"), string(name: "SELENIUM_SERVER_VERSION", value: "${SELENIUM_SERVER_VERSION}")]
+                    } else if ("${RAKQA_ENV}" == 'production'){
+                        build job: "PRODUCTION", wait: true, parameters: [string(name: "RAKQA_ENV", value: "${RAKQA_ENV}"), string(name: "SELENIUM_SERVER_VERSION", value: "${SELENIUM_SERVER_VERSION}")]
+                    } else {
+                        ENV=sh(
+                            returnStdout: true,
+                            script: ''' echo "${RAKQA_ENV}" | cut -d_ -f 1 | sed "s/env/env /" | tr '[:lower:]' '[:upper:]' '''
+                        ).trim()
+                        NUMBER=sh(script: "echo ${ENV} | tr -d -c 0-9 | sed 's/^0*//'", returnStdout: true).trim();
+                        build job: "${ENV}", wait: true, parameters: [string(name: "RAKQA_ENV", value: "${NUMBER}"), string(name: "SELENIUM_SERVER_VERSION", value: "${SELENIUM_SERVER_VERSION}"), string(name: "TAG", value: "${TAG}")]
+                    }
+                }
+            }
+        }
     } 
 }

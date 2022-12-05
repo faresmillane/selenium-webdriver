@@ -1,0 +1,49 @@
+{
+    "cucumberautocomplete.pages": {
+        "_home": "./tests/pages/_home/locators.desktop.js",
+        "_login": "./tests/pages/_login/locators.desktop.js",
+        "_account": "./tests/pages/_account/locators.desktop.js",
+        "_fast_register": "./tests/pages/_fast_register/locators.desktop.js",
+        "_cart": "./tests/pages/_cart/locators.desktop.js",
+        "_search": "./tests/pages/_search/locators.desktop.js",
+        "_nav": "./tests/pages/_nav/locators.desktop.js",
+        "_offer": "./tests/pages/_offer/locators.desktop.js",
+        "_event": "./tests/pages/_event/locators.desktop.js",
+        "_pro_seller": "./tests/pages/_pro_seller/locators.desktop.js",
+        "_part_seller": "./tests/pages/_part_seller/locators.desktop.js",
+        "_messages": "./tests/pages/_messages/locators.desktop.js",
+        "_boutique": "./tests/pages/_boutique/locators.desktop.js",
+        "_crew": "./tests/pages/_crew/locators.desktop.js",
+        "_otp": "./tests/pages/_otp/locators.desktop.js",
+        "users": "./resources/data/users.js",
+        "my_login_email": "",
+        "my_login_password": "",
+        "my_signup_email": "",
+        "my_signup_email_confirm": "",
+        "my_signup_password": "",
+        "my_gender": "",
+        "my_first_name": "",
+        "my_last_name": "",
+        "my_day_of_birth": "",
+        "my_month_of_birth": "",
+        "my_year_of_birth": "",
+        "my_card_number": "",
+        "my_card_expiration_date": "",
+        "my_card_secret": "",
+        "my_random_product": "",
+        "my_digit": "",
+        "_club_rakuten": "./tests/pages/_club_rakuten/locators.desktop.js",
+        "_shipping": "./tests/pages/_shipping/locators.desktop.js",
+        "_adresse": "./tests/pages/_adresse/locators.desktop.js",
+        "_payment": "./tests/pages/_payment/locators.desktop.js"
+    },
+    "cucumberautocomplete.steps": [
+        "./resources/steps/*.js"
+    ],
+    "cucumberautocomplete.customParameters": [
+        {
+            "parameter": "(.*)",
+            "value": "{ab}"
+        }
+    ]
+}

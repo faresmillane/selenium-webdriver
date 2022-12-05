@@ -1,5 +1,5 @@
 {
-  "name": "selenium-webdriver",
+  "name": "qa_auto_supervisor",
   "version": "1.0.0",
   "scripts": {
     "selenium:server": "./node_modules/.bin/selenium",
@@ -7,15 +7,16 @@
     "test:mob": "./node_modules/.bin/cucumber-js tests/features/mob-site/*.feature",
     "test:api": "./node_modules/.bin/cucumber-js tests/features/api/*.feature"
   },
-  "author": "FM",
+  "author": "fares.millane@gmail.com",
   "license": "ISC",
   "dependencies": {
-    "@cucumber/cucumber": "^8.2.0",
+    "@cucumber/cucumber": "^8.6.0",
     "axios": "^0.26.1",
     "dotenv": "^16.0.0",
     "faker": "^5.5.3",
     "fs-extra": "^10.1.0",
-    "selenium-grid-manager": "^1.1.5",
-    "selenium-webdriver": "^4.1.1"
+    "otplib": "^12.0.1",
+    "selenium-grid-manager": "^1.1.6",
+    "selenium-webdriver": "^4.4.0"
   }
 }

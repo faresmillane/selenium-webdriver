@@ -1,23 +1,20 @@
-const util = require('util');
-const fs = require('fs');
-const writeFile = util.promisify(fs.writeFile);
+const fs = require("fs").promises;
 
-const manageError = async (driver, element, error) => {
-    // let screenshot = driver.takeScreenshot();
-    // writeFile(`../screenshot/${element}.png`, screenshot, 'base64');
-    //console.log(error);
+const manageError = async (element) => {
     throw new Error(`${element} : see more logs with verbose script`);
 };
 
-const manageElementError = async (driver, element, error) => {
-    // let screenshot = driver.takeScreenshot();
-    // writeFile(`../screenshot/${element}.png`, screenshot, 'base64');
-    // console.log(error);
+const manageElementError = async (element) => {
     throw new Error(`This element : ${element} is not found, for more details use verbose script`);
 };
 
 const manageElementWarning = async (element) => {
-    console.log('\x1b[33m'+'warning'+'\033[37m'+` This element : ${element} is not found, for more details use verbose script`);
+    console.log('\n','\x1b[33m'+'warning'+'\033[37m'+` This element : ${element} is not found, please update it ...`);
+    const file = await fs.readFile('./reports/warnings.json');
+    warnings = JSON.parse(file);
+    warnings.push(element);
+    warnings = [...new Set(warnings)];
+    await fs.writeFile('./reports/warnings.json', JSON.stringify(warnings, '', 4));
 };
 
 module.exports = {

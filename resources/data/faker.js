@@ -29,7 +29,7 @@ const randomPassword = () => `${faker.lorem.word()}.@A${faker.datatype.number()}
 const randomId = () => faker.datatype.uuid();
 
 const randomGender = () => {
-  const myArray = ['mr_gender', 'mrs_gender'];
+  const myArray = ['_mr_gender', '_mrs_gender'];
   return myArray[Math.floor(Math.random() * myArray.length)];
 };
 
@@ -70,8 +70,36 @@ const randomEvent = () => {
   return myArray[Math.floor(Math.random() * myArray.length)];
 };
 
+const randomBoutique = () => {
+  const myArray = [
+//    'boulanger',
+    'AGAN_FR',
+  ];
+  return myArray[Math.floor(Math.random() * myArray.length)];
+};
+
 const dbbRandomMail = (id) => {
   return `${id}@gmail.com`;
+};
+
+const randomPartner = () => {
+  const myArray = [
+    'ouigo',
+    'nike',
+    'monoprix',
+    'castorama',
+    'conforama',
+    'hm',
+    'hotelscomfrance'
+  ];
+  return myArray[Math.floor(Math.random() * myArray.length)];
+};
+
+const registredUser = () => {
+  return {
+    email: "rakuten.quality@gmail.com",
+    password: "Rakuten2020"
+  };
 };
 
 const rakuten = {
@@ -84,7 +112,10 @@ const rakuten = {
     dbbRandomMail,
     randomNav,
     randomGender,
-    randomEvent
+    randomEvent,
+    randomBoutique,
+    randomPartner,
+    registredUser
 };
 
 module.exports = rakuten;

@@ -2,42 +2,51 @@
 Feature: Authentication
   
   Background:
-    Given I start my navigator in "home_page"
-    Then I navigate to "login_page"
-
-  @GoodAuthenticate
-  Scenario: I can login using my credentials
-    Given I am a "registered" user 
-    When I fill my "login_email" "registered" user
-    And I fill my "login_password" "registered" user
-    And I click on the "me_connecter" button
-    Then I access in the "account_page" screen
-
-  @BadAuthenticate
-  Scenario: I canot login using bad credentials
-    Given I am a "unknow" user 
-    When I fill my "login_email" "unknow" user
-    And I fill my "login_password" "unknow" user
-    And I click on the "me_connecter" button
-    Then I see the "bad_credentials" label
+    Given I navigate to "_login" page
   
-   @AccountCreation
-  Scenario: I can sign up using my informations
-    Given I am a "new" user
-    And I click on the "continuer" button
-    When I fill my "signup_email" "new" user
-    And I fill my "signup_password" "new" user
-    And I click on my "gender" "new" user
-    And I fill my "first_name" "new" user
-    And I fill my "last_name" "new" user
-    And I fill my "day_of_birth" "new" user
-    And I fill my "month_of_birth" "new" user
-    And I fill my "year_of_birth" "new" user
-    And I click on the "creer_compte" button
-    Then I access in the "account_page" screen
-    And I see the "mon_compte" label
+  @GoodAuthenticate @Sanity @Prod
+  Scenario: I can login using my credentials
+    Given I am a "users"."registered" user 
+    When I write "my_login_email" in the "_login"."_login_email" field
+    And I write "my_login_password" in the "_login"."_login_password" field
+    And I "click" on the "_login"."_me_connecter" button
+    Then I access in the "_account" page
+    And I see the "_account"."_mon_compte" label
+    And I see the "_account"."_mes_achats" label
 
-# add fsat register
- 
+  @BadAuthenticate @Sanity @Prod
+  Scenario: I canot login using bad credentials
+    Given I am a "users"."unknow" user 
+    When I write "my_login_email" in the "_login"."_login_email" field
+    And I write "my_login_password" in the "_login"."_login_password" field
+    And I "click" on the "_login"."_me_connecter" button
+    And I see the "_login"."_bad_credentials" label
+  
+   @AccountCreation @Sanity
+  Scenario: I can sign up using my informations
+    Given I am a "users"."new" user
+    And I "click" on the "_login"."_continuer" button
+    When I write "my_signup_email" in the "_login"."_signup_email" field
+    And I write "my_signup_password" in the "_login"."_signup_password" field
+    And I "force_click" on the "_login"."_mr_gender" button
+    And I write "my_first_name" in the "_login"."_first_name" field
+    And I write "my_last_name" in the "_login"."_last_name" field
+    And I write "my_day_of_birth" in the "_login"."_day_of_birth" field
+    And I write "my_month_of_birth" in the "_login"."_month_of_birth" field
+    And I write "my_year_of_birth" in the "_login"."_year_of_birth" field
+    And I "force_click" on the "_login"."_creer_compte" button
+    Then I access in the "_account" page
+    And I see the "_account"."_mon_compte" label
+
+   @OtpAuthenticate @Sanity
+  Scenario: I can login using my credentials and OTP
+    Given I am a "users"."otp" user 
+    When I write "my_login_email" in the "_login"."_login_email" field
+    And I write "my_login_password" in the "_login"."_login_password" field
+    And I "click" on the "_login"."_me_connecter" button
+    And I access in the "_otp" page
+    And I write "my_digit" in the "_otp"."_digit" field
+    Then I access in the "_account" page
+    And I see the "_account"."_mon_compte" label
  
   

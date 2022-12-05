@@ -11,19 +11,30 @@ const web = require('../resources/library/web');
   const navigate = async (url) => {
     await web.getUrl(url);
     await web.wait();
-    await web.maximizeWindow();
+//    await web.maximizeWindow();
   }
 
   const fillTextWeb = async (element, text) => {
     await web.fillText(element, text);
   }
 
+  const getTextWeb = async (element) => {
+    const text = await web.getText(element);
+    return text;
+  }
+
   const findElementWeb = async (element) => {
     await web.findElement(element);
   }
 
-  const clickWeb = async (element) => {
-    await web.click(element);
+  const clickWeb = async (action, element) => {
+    if (action == 'click') {
+      await web.click(element);
+    } else if (action == 'force_click'){
+      await web.clickBox(element);
+    } else {
+      await web.clickEnter(element);
+    }
   }
 
   const quitDriverWeb = async () => {
@@ -54,6 +65,21 @@ const web = require('../resources/library/web');
     await web.elementIsDisplayed(element);
   }
 
+  const switchTo = async (type, name) => {
+    if (type == 'window') {
+      const url = await web.switchToWindow(name);
+      return url;
+    } else if (type == 'frame') {
+      await web.switchToFrame(name);
+    }
+  }
+
+  const fillCardInformation = async (element, value) => {
+    await web.switchToFrame(element);
+    await web.fillText(["XPATH=//input"], value)
+    await web.switchToFrame('null');
+  }
+
   module.exports = {
     runSeleniumServer,
     init,
@@ -67,5 +93,8 @@ const web = require('../resources/library/web');
     clickBox,
     wait,
     waitElement,
-    isDisplayed
+    isDisplayed,
+    switchTo,
+    fillCardInformation,
+    getTextWeb
 };
